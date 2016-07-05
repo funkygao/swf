@@ -25,3 +25,4 @@ _testmain.go
 
 cmd/swf/swf
 cmd/swfd/swfd
+apps/alarmer/alarmer

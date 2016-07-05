@@ -4,7 +4,7 @@
 // - send sms
 // - mark handling
 // - mark handled
-// - escalatea
+// - escalate
 // - manual phone call
 //
 // Decider:
