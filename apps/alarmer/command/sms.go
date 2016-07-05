@@ -24,7 +24,7 @@ func (this *Sms) Run(args []string) (exitCode int) {
 }
 
 func (*Sms) Synopsis() string {
-	return "Send sms to person in charge of the alarm."
+	return "(worker) Send sms to person in charge of the alarm."
 }
 
 func (this *Sms) Help() string {

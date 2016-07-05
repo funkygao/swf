@@ -24,7 +24,7 @@ func (this *Escalate) Run(args []string) (exitCode int) {
 }
 
 func (*Escalate) Synopsis() string {
-	return "Escalate this alarm to a higher level."
+	return "(worker) Escalate this alarm to a higher level."
 }
 
 func (this *Escalate) Help() string {

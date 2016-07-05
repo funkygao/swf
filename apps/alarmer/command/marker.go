@@ -24,7 +24,7 @@ func (this *Marker) Run(args []string) (exitCode int) {
 }
 
 func (*Marker) Synopsis() string {
-	return "Mark this alarm <being handled | handled | false alarm | phone called>."
+	return "(worker) Mark this alarm <being handled | handled | false alarm | phone called>."
 }
 
 func (this *Marker) Help() string {

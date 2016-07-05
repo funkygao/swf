@@ -24,7 +24,7 @@ func (this *Receiver) Run(args []string) (exitCode int) {
 }
 
 func (*Receiver) Synopsis() string {
-	return "Start receiving alarms upon which to start a new workflow execution."
+	return "(starter) Start receiving alarms upon which to start a new workflow execution."
 }
 
 func (this *Receiver) Help() string {

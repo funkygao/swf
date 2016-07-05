@@ -24,7 +24,7 @@ func (this *Decider) Run(args []string) (exitCode int) {
 }
 
 func (*Decider) Synopsis() string {
-	return "Start the decider process."
+	return "(decider) Start the decider process."
 }
 
 func (this *Decider) Help() string {

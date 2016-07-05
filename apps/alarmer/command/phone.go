@@ -24,7 +24,7 @@ func (this *Phone) Run(args []string) (exitCode int) {
 }
 
 func (*Phone) Synopsis() string {
-	return "Manually phone call the person in charge."
+	return "(worker) Manually phone call the person in charge."
 }
 
 func (this *Phone) Help() string {
