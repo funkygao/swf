@@ -43,11 +43,11 @@ func (this *Activity) Run(args []string) (exitCode int) {
 }
 
 func (this *Activity) listActivityTypes() {
-	swf.Default().ListActivityTypes()
+	swfapi.Default().ListActivityTypes()
 }
 
 func (this *Activity) registerActivityType() {
-	swf.Default().RegisterActivityType()
+	swfapi.Default().RegisterActivityType()
 }
 
 func (*Activity) Synopsis() string {

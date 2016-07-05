@@ -42,7 +42,7 @@ func (this *Kickoff) Run(args []string) (exitCode int) {
 }
 
 func (this *Kickoff) startExecution() {
-	swf.Default().StartWorkflowExecution()
+	swfapi.Default().StartWorkflowExecution()
 }
 
 func (*Kickoff) Synopsis() string {

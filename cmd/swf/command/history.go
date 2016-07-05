@@ -38,7 +38,7 @@ func (this *History) Run(args []string) (exitCode int) {
 }
 
 func (this *History) listHistory() {
-	swf.Default().GetWorkflowExecutionHistory()
+	swfapi.Default().GetWorkflowExecutionHistory()
 }
 
 func (*History) Synopsis() string {

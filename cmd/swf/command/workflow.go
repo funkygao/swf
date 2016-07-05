@@ -43,11 +43,11 @@ func (this *Workflow) Run(args []string) (exitCode int) {
 }
 
 func (this *Workflow) registerWorkflowType() {
-	swf.Default().RegisterWorkflowType()
+	swfapi.Default().RegisterWorkflowType()
 }
 
 func (this *Workflow) listWorkflowTypes() {
-	swf.Default().ListWorkflowTypes()
+	swfapi.Default().ListWorkflowTypes()
 }
 
 func (*Workflow) Synopsis() string {

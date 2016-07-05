@@ -1,4 +1,4 @@
-package swf
+package swfapi
 
 func (this *Client) RegisterWorkflowType() {
 

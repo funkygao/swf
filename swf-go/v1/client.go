@@ -1,4 +1,4 @@
-package swf
+package swfapi
 
 type Client struct {
 	cf *config
