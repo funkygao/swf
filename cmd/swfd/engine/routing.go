@@ -10,7 +10,7 @@ func (this *Swf) setupApis() {
 	if this.apiServer != nil {
 		this.apiServer.Router().GET("/alive", m(this.apiServer.checkAliveHandler))
 		this.apiServer.Router().NotFound = http.HandlerFunc(this.apiServer.notFoundHandler)
-		this.apiServer.Router().POST("/v1", m(this.apiServer.mainEntryPoint))
+		this.apiServer.Router().POST("/v1", m(this.apiServer.handleApiV1))
 	}
 
 }

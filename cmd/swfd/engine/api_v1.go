@@ -4,31 +4,51 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/funkygao/gafka/mpool"
+	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
-func (this *apiServer) mainEntryPoint(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	// X-Amz-Target: SimpleWorkflowService.StartWorkflowExecution
-	// X-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,Algorithm=HmacSHA256,SignedHeaders=Host;X-Amz-Date;X-Amz-Target;Content-Encoding,Signature=aYxuqLX+TO91kPVg+jh+aA8PWxQazQRN2+SZUGdOgU0=
-	body := make([]byte, 0, int(r.ContentLength))
-	io.ReadAtLeast(r.Body, body, int(r.ContentLength))
+func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	payloadLen := int(r.ContentLength)
+	payload := mpool.NewMessage(payloadLen)
+	payload.Body = payload.Body[0:payloadLen]
+	defer payload.Free()
+
+	if _, err := io.ReadAtLeast(r.Body, payload.Body, payloadLen); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	api := r.Header.Get("X-Swf-Api")
+	log.Debug("%s %s(%s) %s", api, r.RemoteAddr, utils.HttpRemoteIp(r), string(payload.Body))
+
 	switch api {
-	case opStartWorkflowExecution:
+	case models.OpStartWorkflowExecution:
 		input := &models.StartWorkflowExecutionInput{}
-		input.From(body)
+		if err := input.From(payload.Body); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		this.startWorkflowExecution(input)
 
-	case opPollForActivityTask:
-	case opPollForDecisionTask:
-	case opRecordActivityTaskHeartbeat:
-	case opRespondActivityTaskCompleted:
-	case opRespondDecisionTaskCompleted:
-	case opTerminateWorkflowExecution:
-	default:
+	case models.OpRegisterWorkflowType:
 
+	case models.OpRegisterActivityType:
+
+	case models.OpPollForActivityTask:
+	case models.OpPollForDecisionTask:
+
+	case models.OpRecordActivityTaskHeartbeat:
+
+	case models.OpRespondActivityTaskCompleted:
+	case models.OpRespondDecisionTaskCompleted:
+	case models.OpTerminateWorkflowExecution:
+
+	default:
+		this.notFoundHandler(w, r)
 	}
 }
 
