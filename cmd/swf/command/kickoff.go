@@ -7,7 +7,7 @@ import (
 
 	"github.com/funkygao/gocli"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/swf-go/v1"
+	"github.com/funkygao/swf/sdk/go/v1"
 )
 
 type Kickoff struct {
