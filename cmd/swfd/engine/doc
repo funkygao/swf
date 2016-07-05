@@ -1,0 +1,40 @@
+activity worker
+workflow worker
+workflow starter
+
+ • Register workflows or activities with Amazon SWF.
+ • Create worker objects and associate them with the workflow or activity worker implementations.
+ • Direct the worker objects to start communicating with Amazon SWF.
+
+import com.amazonaws.services.simpleworkflow.flow.annotations.Activities; 
+import com.amazonaws.services.simpleworkflow.flow.annotations.ActivityRegistra tionOptions;
+@ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 300, defaultTaskStartToCloseTimeoutSeconds = 10)
+@Activities(version="1.0")
+public interface GreeterActivities {
+    public String getName();
+    public String getGreeting(String name);
+    public void say(String what);
+}
+
+
+import com.amazonaws.services.simpleworkflow.flow.annotations.Execute; 
+import com.amazonaws.services.simpleworkflow.flow.annotations.Workflow; 
+import com.amazonaws.services.simpleworkflow.flow.annotations.WorkflowRegistra tionOptions;
+@Workflow 
+@WorkflowRegistrationOptions(defaultExecutionStartToCloseTimeoutSeconds = 3600) 
+public interface GreeterWorkflow {
+    @Execute(version = "1.0")
+    public void greet();
+}
+
+
+import com.amazonaws.services.simpleworkflow.flow.core.Promise;
+public class GreeterWorkflowImpl implements GreeterWorkflow {
+    private GreeterActivitiesClient operations = new GreeterActivitiesClientImpl();
+
+    public void greet() {
+        Promise<String> name = operations.getName();
+        Promise<String> greeting = operations.getGreeting(name);
+        operations.say(greeting);
+    } 
+}

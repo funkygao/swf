@@ -1,0 +1,9 @@
+{
+    "name": "swf-php",
+    "description": "SWF SDK for PHP",
+    "type": "library",
+    "license":"Apache-2.0",
+    "require": {
+        "php": ">=5.2.0"
+    },
+}
