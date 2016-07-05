@@ -6,25 +6,52 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/swf-go/v1"
 )
 
 type Workflow struct {
 	Ui  cli.Ui
 	Cmd string
+
+	workflowType models.WorkflowType
 }
 
 func (this *Workflow) Run(args []string) (exitCode int) {
+	var (
+		listMode, registerMode bool
+	)
 	cmdFlags := flag.NewFlagSet("workflow", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
+	cmdFlags.BoolVar(&listMode, "list", true, "")
+	cmdFlags.BoolVar(&registerMode, "register", false, "")
+	cmdFlags.StringVar(&this.workflowType.Name, "name", "", "")
+	cmdFlags.StringVar(&this.workflowType.Version, "version", "", "")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
+	}
+
+	switch {
+	case listMode:
+		this.listWorkflowTypes()
+
+	case registerMode:
+		this.registerWorkflowType()
 	}
 
 	return
 }
 
+func (this *Workflow) registerWorkflowType() {
+	swf.Default().RegisterWorkflowType()
+}
+
+func (this *Workflow) listWorkflowTypes() {
+	swf.Default().ListWorkflowTypes()
+}
+
 func (*Workflow) Synopsis() string {
-	return "Register/List/Manipulate workflow and workflow type."
+	return "Register/List/Modify workflow and workflow type."
 }
 
 func (this *Workflow) Help() string {

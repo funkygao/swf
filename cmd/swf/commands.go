@@ -30,6 +30,13 @@ func init() {
 			}, nil
 		},
 
+		"?": func() (cli.Command, error) {
+			return &command.FAQ{
+				Ui:  ui,
+				Cmd: cmd,
+			}, nil
+		},
+
 		"activity": func() (cli.Command, error) {
 			return &command.Activity{
 				Ui:  ui,

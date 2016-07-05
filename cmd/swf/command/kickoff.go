@@ -11,6 +11,9 @@ import (
 type Kickoff struct {
 	Ui  cli.Ui
 	Cmd string
+
+	workflowId string
+	input      string
 }
 
 func (this *Kickoff) Run(args []string) (exitCode int) {
@@ -40,9 +43,9 @@ Usage: %s kickoff [options]
     -workflow-type <name,version>
       The type of the workflow to start.
 
-    -in <data>
+    -input <data>
       The input for the workflow execution.
-       This is a free form string which should be meaningful to the workflow you are starting.
+      This is a free form string which should be meaningful to the workflow you are starting.
 
     -queue <queue>
 
