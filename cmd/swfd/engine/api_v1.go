@@ -25,60 +25,162 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 	api := r.Header.Get("X-Swf-Api")
 	log.Debug("%s %s(%s) %s", api, r.RemoteAddr, utils.HttpRemoteIp(r), string(payload.Body))
 
+	// http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-workflow-exec-lifecycle.html
+	var (
+		resp models.HttpApiResponse
+		err  error
+	)
 	switch api {
-	case models.OpStartWorkflowExecution:
-		input := &models.StartWorkflowExecutionInput{}
-		if err := input.From(payload.Body); err != nil {
+	case models.OpRegisterWorkflowType:
+		input := &models.RegisterWorkflowTypeInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.registerWorkflowType(input)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		this.startWorkflowExecution(input)
-
-	case models.OpRegisterWorkflowType:
 
 	case models.OpRegisterActivityType:
+		input := &models.RegisterActivityTypeInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.registerActivityType(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+	case models.OpStartWorkflowExecution:
+		input := &models.StartWorkflowExecutionInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.startWorkflowExecution(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
 	case models.OpPollForActivityTask:
+		input := &models.PollForActivityTaskInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.pollForActivityTask(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 	case models.OpPollForDecisionTask:
+		input := &models.PollForDecisionTaskInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.pollForDecisionTask(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+	case models.OpRespondActivityTaskCompleted:
+		input := &models.RespondActivityTaskCompletedInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.respondActivityTaskCompleted(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+	case models.OpRespondDecisionTaskCompleted:
+		input := &models.RespondDecisionTaskCompletedInput{}
+		if this.unmarshalRequest(input, &payload.Body, w) {
+			return
+		}
+
+		resp, err = this.respondDecisionTaskCompleted(input)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
 	case models.OpRecordActivityTaskHeartbeat:
 
-	case models.OpRespondActivityTaskCompleted:
-	case models.OpRespondDecisionTaskCompleted:
 	case models.OpTerminateWorkflowExecution:
 
 	default:
 		this.notFoundHandler(w, r)
 	}
+
+	w.Write(resp.Bytes())
+}
+
+func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
+	output *models.RegisterWorkflowTypeOutput, err error) {
+	output = &models.RegisterWorkflowTypeOutput{}
+	return
+}
+
+func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
+	output *models.RegisterActivityTypeOutput, err error) {
+	output = &models.RegisterActivityTypeOutput{}
+	return
 }
 
 func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
 	output *models.StartWorkflowExecutionOutput, err error) {
-	return nil, nil
-
+	// fire WorkflowExecutionStarted Event
+	// fire DecisionTaskScheduled Event
+	// and schedules the 1st decision task
+	output = &models.StartWorkflowExecutionOutput{}
+	return
 }
 
-// When a decider schedules an activity task, it provides the data (which you determine) that the activity worker needs to perform the activity task.
-// Amazon SWF inserts this data into the activity task before sending it to the activity worker.
-//
-// The execution state for a workflow execution is stored in its workflow history.
-// There can be only one decision task open at any time for a given workflow execution.
-// Every time a state change occurs for a workflow execution, Amazon SWF schedules a decision task.
+func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInput) (
+	output *models.PollForDecisionTaskOutput, err error) {
+	// fire ScheduleActivityTask decision
+	output = &models.PollForDecisionTaskOutput{}
+	return
+}
 
-/*
-RegisterDomain(name, description, workflowExecutionRetentionPeriodInDays string)
+func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInput) (
+	output *models.PollForActivityTaskOutput, err error) {
+	output = &models.PollForActivityTaskOutput{}
+	return
+}
 
-RegisterWorkflowType(domain, name, version, description, defaultTaskList string)
+func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivityTaskCompletedInput) (
+	output *models.RespondActivityTaskCompletedOutput, err error) {
+	// fire ActivityTaskCompleted Event
+	// fire DecisionTaskScheduled Event
+	output = &models.RespondActivityTaskCompletedOutput{}
+	return
+}
 
-RegisterActivityType(domain, name, version, description, defaultTaskList string)
+func (this *apiServer) respondDecisionTaskCompleted(input *models.RespondDecisionTaskCompletedInput) (
+	output *models.RespondDecisionTaskCompletedOutput, err error) {
+	// ScheduleActivityTask Decision
+	// fire ActivityTaskScheduled Event
+	output = &models.RespondDecisionTaskCompletedOutput{}
+	return
+}
 
-// workflowId unique across StartWorkflowExecution
-StartWorkflowExecution(domain, taskList, workflowType, workflowId, input string, tagList []string) (runId string)
+func (this *apiServer) unmarshalRequest(input models.HttpApiRequest, payload *[]byte, w http.ResponseWriter) (errFoundAndHandled bool) {
+	if err := input.From(*payload); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return true
+	}
 
-PollForDecisionTask(domain, taskList, identity string, maximumPageSize int, reverseOrder bool) (events []HistoryEvent, previousStartedEventId int64, startedEventId int64, taskToken string, we WorkflowExecution)
-RespondDecisionTaskCompleted(decisions []Decision, executionContext string, taskToken string)
-
-PollForActivityTask(domain, taskList, identity string) (activityId string, activityType, input, startedEventId, taskToken, runId, workflowId string)
-RespondActivityTaskCompleted(result, taskToken string)
-
-*/
+	return false
+}

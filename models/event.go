@@ -1,5 +1,6 @@
 package models
 
+// union
 type HistoryEvent struct {
 }
 
