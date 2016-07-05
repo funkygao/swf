@@ -85,5 +85,5 @@ func (this *webServer) notFoundHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (this *webServer) checkAliveHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	w.Write(ResponseOk)
+	w.Write([]byte(`{"ok":1}`))
 }
