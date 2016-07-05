@@ -24,7 +24,7 @@ func (this *Activity) Run(args []string) (exitCode int) {
 }
 
 func (*Activity) Synopsis() string {
-	return "Register/List/Manipulate activity and activity type"
+	return "Register/List/Manipulate activity and activity type."
 }
 
 func (this *Activity) Help() string {

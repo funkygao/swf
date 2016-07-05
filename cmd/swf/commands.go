@@ -23,7 +23,6 @@ func init() {
 
 	cmd := os.Args[0]
 	commands = map[string]cli.CommandFactory{
-
 		"workflow": func() (cli.Command, error) {
 			return &command.Workflow{
 				Ui:  ui,
@@ -33,6 +32,20 @@ func init() {
 
 		"activity": func() (cli.Command, error) {
 			return &command.Activity{
+				Ui:  ui,
+				Cmd: cmd,
+			}, nil
+		},
+
+		"kickoff": func() (cli.Command, error) {
+			return &command.Kickoff{
+				Ui:  ui,
+				Cmd: cmd,
+			}, nil
+		},
+
+		"history": func() (cli.Command, error) {
+			return &command.History{
 				Ui:  ui,
 				Cmd: cmd,
 			}, nil

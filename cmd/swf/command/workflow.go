@@ -24,7 +24,7 @@ func (this *Workflow) Run(args []string) (exitCode int) {
 }
 
 func (*Workflow) Synopsis() string {
-	return "Register/List/Manipulate workflow and workflow type"
+	return "Register/List/Manipulate workflow and workflow type."
 }
 
 func (this *Workflow) Help() string {
@@ -32,6 +32,23 @@ func (this *Workflow) Help() string {
 Usage: %s workflow [options]
 
     %s
+
+    -register <name>
+      Register a new workflow type.
+
+      -version <version>
+        The version of the workflow type.
+
+        NOTE:
+            The workflow type consists of name and version, the combination
+            of which must be unique within the app.
+
+      [-description <value>]
+
+    -list
+      Returns information about workflow types in the specified app.
+
+      [-name <name>]
 
 `, this.Cmd, this.Synopsis())
 	return strings.TrimSpace(help)
