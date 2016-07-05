@@ -74,6 +74,3 @@ func (this *webServer) notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func (this *webServer) checkAliveHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	w.Write(ResponseOk)
 }
-
-func (this *webServer) NotImplemented(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-}

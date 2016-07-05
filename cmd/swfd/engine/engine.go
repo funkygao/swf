@@ -4,7 +4,17 @@ import (
 	"net/http"
 )
 
-func (this *Swf) setupApis() {
+// Engine is the SimpleWorkFlow server engine.
+type Engine struct {
+	apiServer *apiServer
+}
+
+func New() *Engine {
+	this := &Engine{}
+	return this
+}
+
+func (this *Engine) setupApis() {
 	m := this.Middleware
 
 	if this.apiServer != nil {
@@ -13,4 +23,10 @@ func (this *Swf) setupApis() {
 		this.apiServer.Router().POST("/v1", m(this.apiServer.handleApiV1))
 	}
 
+}
+
+func (this *Engine) ServeForever() {
+	this.setupApis()
+
+	select {}
 }

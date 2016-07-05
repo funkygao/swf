@@ -3,7 +3,6 @@ package engine
 import (
 	"flag"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/funkygao/gafka/ctx"
@@ -13,14 +12,8 @@ var (
 	Options struct {
 		Id                      string
 		Zone                    string
-		ConfigFile              string
-		PubHttpAddr             string
-		PubHttpsAddr            string
-		SubHttpAddr             string
-		SubHttpsAddr            string
-		ManHttpAddr             string
-		ManHttpsAddr            string
-		DebugHttpAddr           string
+		ApiHttpAddr             string
+		ApiHttpsAddr            string
 		Store                   string
 		ManagerStore            string
 		PidFile                 string
@@ -31,7 +24,6 @@ var (
 		CrashLogFile            string
 		InfluxServer            string
 		InfluxDbName            string
-		KillFile                string
 		ShowVersion             bool
 		Ratelimit               bool
 		PermitStandbySub        bool
@@ -72,34 +64,18 @@ func ParseFlags() {
 		panic(err)
 	}
 
-	var (
-		defaultPubHttpAddr  = fmt.Sprintf("%s:9191", ip.String())
-		defaultPubHttpsAddr = ""
-		defaultSubHttpAddr  = fmt.Sprintf("%s:9192", ip.String())
-		defaultSubHttpsAddr = ""
-		defaultManHttpAddr  = fmt.Sprintf("%s:9193", ip.String())
-		defaultManHttpsAddr = ""
-	)
-
 	flag.StringVar(&Options.Id, "id", "", "kateway id, the id must be unique within a host")
 	flag.StringVar(&Options.Zone, "zone", "", "kafka zone name")
-	flag.StringVar(&Options.PubHttpAddr, "pubhttp", defaultPubHttpAddr, "pub http bind addr")
-	flag.StringVar(&Options.PubHttpsAddr, "pubhttps", defaultPubHttpsAddr, "pub https bind addr")
-	flag.StringVar(&Options.SubHttpAddr, "subhttp", defaultSubHttpAddr, "sub http bind addr")
-	flag.StringVar(&Options.SubHttpsAddr, "subhttps", defaultSubHttpsAddr, "sub https bind addr")
-	flag.StringVar(&Options.ManHttpAddr, "manhttp", defaultManHttpAddr, "management http bind addr")
-	flag.StringVar(&Options.ManHttpsAddr, "manhttps", defaultManHttpsAddr, "management https bind addr")
+	flag.StringVar(&Options.ApiHttpAddr, "http", fmt.Sprintf("%s:9191", ip.String()), "http bind addr")
+	flag.StringVar(&Options.ApiHttpsAddr, "https", "", "https bind addr")
 	flag.StringVar(&Options.LogLevel, "level", "trace", "log level")
 	flag.StringVar(&Options.LogFile, "log", "stdout", "log file, default stdout")
 	flag.StringVar(&Options.CrashLogFile, "crashlog", "", "crash log")
 	flag.StringVar(&Options.CertFile, "certfile", "", "cert file path")
 	flag.StringVar(&Options.PidFile, "pid", "", "pid file")
 	flag.StringVar(&Options.KeyFile, "keyfile", "", "key file path")
-	flag.StringVar(&Options.DebugHttpAddr, "debughttp", "", "debug http bind addr")
 	flag.StringVar(&Options.Store, "store", "kafka", "backend store")
 	flag.StringVar(&Options.ManagerStore, "mstore", "mysql", "store integration with manager")
-	flag.StringVar(&Options.ConfigFile, "conf", "/etc/kateway.cf", "config file")
-	flag.StringVar(&Options.KillFile, "kill", "", "kill running kateway by pid file")
 	flag.StringVar(&Options.InfluxServer, "influxdbaddr", "http://10.77.144.193:10036", "influxdb server address for the metrics reporter")
 	flag.StringVar(&Options.InfluxDbName, "influxdbname", "pubsub", "influxdb db name")
 	flag.BoolVar(&Options.ShowVersion, "version", false, "show version and exit")
@@ -138,16 +114,5 @@ func ParseFlags() {
 }
 
 func ValidateFlags() {
-	if Options.KillFile != "" {
-		return
-	}
 
-	if Options.Zone == "" {
-		fmt.Fprintf(os.Stderr, "-zone required\n")
-		os.Exit(1)
-	}
-
-	if Options.ManHttpsAddr == "" && Options.ManHttpAddr == "" {
-		fmt.Fprintf(os.Stderr, "-manhttp or -manhttps required\n")
-	}
 }
