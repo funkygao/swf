@@ -1,6 +1,7 @@
 package command
 
 import (
+	"flag"
 	"fmt"
 	"strings"
 
@@ -13,6 +14,12 @@ type Workflow struct {
 }
 
 func (this *Workflow) Run(args []string) (exitCode int) {
+	cmdFlags := flag.NewFlagSet("workflow", flag.ContinueOnError)
+	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
+	if err := cmdFlags.Parse(args); err != nil {
+		return 1
+	}
+
 	return
 }
 
@@ -24,8 +31,8 @@ func (this *Workflow) Help() string {
 	help := fmt.Sprintf(`
 Usage: %s workflow [options]
 
-    Register/List/Manipulate workflow and workflow type
+    %s
 
-`, this.Cmd)
+`, this.Cmd, this.Synopsis())
 	return strings.TrimSpace(help)
 }

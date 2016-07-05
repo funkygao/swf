@@ -1,6 +1,7 @@
 package command
 
 import (
+	"flag"
 	"fmt"
 	"strings"
 
@@ -13,6 +14,12 @@ type Activity struct {
 }
 
 func (this *Activity) Run(args []string) (exitCode int) {
+	cmdFlags := flag.NewFlagSet("activity", flag.ContinueOnError)
+	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
+	if err := cmdFlags.Parse(args); err != nil {
+		return 1
+	}
+
 	return
 }
 
@@ -24,8 +31,8 @@ func (this *Activity) Help() string {
 	help := fmt.Sprintf(`
 Usage: %s activity [options]
 
-    Register/List/Manipulate activity and activity type
+    %s
 
-`, this.Cmd)
+`, this.Cmd, this.Synopsis())
 	return strings.TrimSpace(help)
 }
