@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/golib/color"
 )
 
 type Receiver struct {
@@ -24,7 +25,7 @@ func (this *Receiver) Run(args []string) (exitCode int) {
 }
 
 func (*Receiver) Synopsis() string {
-	return "(starter) Start receiving alarms upon which to start a new workflow execution."
+	return fmt.Sprintf("(%s) Start receiving alarms upon which to start a new workflow execution.", color.Red("starter"))
 }
 
 func (this *Receiver) Help() string {

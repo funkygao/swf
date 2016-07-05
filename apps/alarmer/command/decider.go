@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/golib/color"
 )
 
 type Decider struct {
@@ -24,7 +25,7 @@ func (this *Decider) Run(args []string) (exitCode int) {
 }
 
 func (*Decider) Synopsis() string {
-	return "(decider) Start the decider process."
+	return fmt.Sprintf("(%s) Start the decider process.", color.Yellow("decider"))
 }
 
 func (this *Decider) Help() string {

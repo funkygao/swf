@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/golib/color"
 )
 
 type Marker struct {
@@ -24,7 +25,7 @@ func (this *Marker) Run(args []string) (exitCode int) {
 }
 
 func (*Marker) Synopsis() string {
-	return "(worker) Mark this alarm <being handled | handled | false alarm | phone called>."
+	return fmt.Sprintf("(%s) Mark this alarm <being handled | handled | false alarm | phone called>.", color.Blue("worker"))
 }
 
 func (this *Marker) Help() string {

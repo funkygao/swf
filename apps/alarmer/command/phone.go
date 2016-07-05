@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/golib/color"
 )
 
 type Phone struct {
@@ -24,7 +25,7 @@ func (this *Phone) Run(args []string) (exitCode int) {
 }
 
 func (*Phone) Synopsis() string {
-	return "(worker) Manually phone call the person in charge."
+	return fmt.Sprintf("(%s) Manually phone call the person in charge.", color.Blue("worker"))
 }
 
 func (this *Phone) Help() string {

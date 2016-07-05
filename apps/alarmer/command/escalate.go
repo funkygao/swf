@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/golib/color"
 )
 
 type Escalate struct {
@@ -24,7 +25,7 @@ func (this *Escalate) Run(args []string) (exitCode int) {
 }
 
 func (*Escalate) Synopsis() string {
-	return "(worker) Escalate this alarm to a higher level."
+	return fmt.Sprintf("(%s) Escalate this alarm to a higher level.", color.Blue("worker"))
 }
 
 func (this *Escalate) Help() string {
