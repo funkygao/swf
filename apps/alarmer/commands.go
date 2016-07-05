@@ -51,6 +51,13 @@ func init() {
 			}, nil
 		},
 
+		"decider": func() (cli.Command, error) {
+			return &command.Decider{
+				Ui:  ui,
+				Cmd: cmd,
+			}, nil
+		},
+
 		"phone": func() (cli.Command, error) {
 			return &command.Phone{
 				Ui:  ui,

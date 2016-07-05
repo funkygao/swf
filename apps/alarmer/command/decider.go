@@ -8,13 +8,13 @@ import (
 	"github.com/funkygao/gocli"
 )
 
-type Receiver struct {
+type Decider struct {
 	Ui  cli.Ui
 	Cmd string
 }
 
-func (this *Receiver) Run(args []string) (exitCode int) {
-	cmdFlags := flag.NewFlagSet("receiver", flag.ContinueOnError)
+func (this *Decider) Run(args []string) (exitCode int) {
+	cmdFlags := flag.NewFlagSet("decider", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
@@ -23,13 +23,13 @@ func (this *Receiver) Run(args []string) (exitCode int) {
 	return
 }
 
-func (*Receiver) Synopsis() string {
-	return "Start receiving alarms upon which to start a new workflow execution."
+func (*Decider) Synopsis() string {
+	return "Start the decider process."
 }
 
-func (this *Receiver) Help() string {
+func (this *Decider) Help() string {
 	help := fmt.Sprintf(`
-Usage: %s receiver [options]
+Usage: %s decider [options]
 
     %s   
 
