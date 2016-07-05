@@ -42,7 +42,7 @@ func (this *Kickoff) Run(args []string) (exitCode int) {
 }
 
 func (this *Kickoff) startExecution() {
-	input := &swfapi.StartWorkflowExecutionInput{
+	input := &models.StartWorkflowExecutionInput{
 		Input:        this.input,
 		WorkflowId:   this.workflowId,
 		WorkflowType: this.workflowType,

@@ -43,7 +43,7 @@ func (this *Workflow) Run(args []string) (exitCode int) {
 }
 
 func (this *Workflow) registerWorkflowType() {
-	input := &swfapi.RegisterWorkflowTypeInput{
+	input := &models.RegisterWorkflowTypeInput{
 		WorkflowType: this.workflowType,
 	}
 	_, err := swfapi.Default().RegisterWorkflowType(input)

@@ -7,7 +7,7 @@ import (
 	"github.com/funkygao/swf/models"
 )
 
-func (this *Client) RegisterWorkflowType(input *RegisterWorkflowTypeInput) (*RegisterWorkflowTypeOutput, error) {
+func (this *Client) RegisterWorkflowType(input *models.RegisterWorkflowTypeInput) (*models.RegisterWorkflowTypeOutput, error) {
 	resp, body, err := this.call(models.OpRegisterWorkflowType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
@@ -17,12 +17,12 @@ func (this *Client) RegisterWorkflowType(input *RegisterWorkflowTypeInput) (*Reg
 		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
 	}
 
-	output := &RegisterWorkflowTypeOutput{}
-	output.from(body)
+	output := &models.RegisterWorkflowTypeOutput{}
+	output.From(body)
 	return output, nil
 }
 
-func (this *Client) RegisterActivityType(input *RegisterActivityTypeInput) (*RegisterActivityTypeOutput, error) {
+func (this *Client) RegisterActivityType(input *models.RegisterActivityTypeInput) (*models.RegisterActivityTypeOutput, error) {
 	resp, body, err := this.call(models.OpRegisterActivityType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
@@ -32,12 +32,12 @@ func (this *Client) RegisterActivityType(input *RegisterActivityTypeInput) (*Reg
 		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
 	}
 
-	output := &RegisterActivityTypeOutput{}
-	output.from(body)
+	output := &models.RegisterActivityTypeOutput{}
+	output.From(body)
 	return output, nil
 }
 
-func (this *Client) StartWorkflowExecution(input *StartWorkflowExecutionInput) (*StartWorkflowExecutionOutput, error) {
+func (this *Client) StartWorkflowExecution(input *models.StartWorkflowExecutionInput) (*models.StartWorkflowExecutionOutput, error) {
 	resp, body, err := this.call(models.OpRegisterActivityType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
@@ -47,8 +47,8 @@ func (this *Client) StartWorkflowExecution(input *StartWorkflowExecutionInput) (
 		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
 	}
 
-	output := &StartWorkflowExecutionOutput{}
-	output.from(body)
+	output := &models.StartWorkflowExecutionOutput{}
+	output.From(body)
 	return output, nil
 }
 

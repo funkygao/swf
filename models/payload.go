@@ -1,13 +1,11 @@
-package swfapi
+package models
 
 import (
 	"encoding/json"
-
-	"github.com/funkygao/swf/models"
 )
 
 type RegisterActivityTypeInput struct {
-	models.ActivityType
+	ActivityType
 	Description string
 }
 
@@ -15,12 +13,12 @@ type RegisterActivityTypeOutput struct {
 	// empty
 }
 
-func (this *RegisterActivityTypeOutput) from(payload []byte) {
+func (this *RegisterActivityTypeOutput) From(payload []byte) {
 
 }
 
 type RegisterWorkflowTypeInput struct {
-	models.WorkflowType
+	WorkflowType
 	Description string
 }
 
@@ -28,7 +26,7 @@ type RegisterWorkflowTypeOutput struct {
 	// empty
 }
 
-func (this *RegisterWorkflowTypeOutput) from(payload []byte) {
+func (this *RegisterWorkflowTypeOutput) From(payload []byte) {
 
 }
 
@@ -36,13 +34,13 @@ type StartWorkflowExecutionInput struct {
 	Input        string
 	Queue        string
 	WorkflowId   string
-	WorkflowType models.WorkflowType
+	WorkflowType WorkflowType
 }
 
 type StartWorkflowExecutionOutput struct {
 	RunId string `json:"run_id"`
 }
 
-func (this *StartWorkflowExecutionOutput) from(payload []byte) {
+func (this *StartWorkflowExecutionOutput) From(payload []byte) {
 	json.Unmarshal(payload, this)
 }

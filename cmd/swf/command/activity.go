@@ -47,7 +47,7 @@ func (this *Activity) listActivityTypes() {
 }
 
 func (this *Activity) registerActivityType() {
-	input := &swfapi.RegisterActivityTypeInput{
+	input := &models.RegisterActivityTypeInput{
 		ActivityType: this.activityType,
 	}
 	_, err := swfapi.Default().RegisterActivityType(input)
