@@ -42,7 +42,18 @@ func (this *Kickoff) Run(args []string) (exitCode int) {
 }
 
 func (this *Kickoff) startExecution() {
-	swfapi.Default().StartWorkflowExecution()
+	input := &swfapi.StartWorkflowExecutionInput{
+		Input:        this.input,
+		WorkflowId:   this.workflowId,
+		WorkflowType: this.workflowType,
+	}
+	output, err := swfapi.Default().StartWorkflowExecution(input)
+	if err != nil {
+		this.Ui.Error(err.Error())
+		return
+	}
+
+	this.Ui.Info(fmt.Sprintf("submited with run id: %s", output.RunId))
 }
 
 func (*Kickoff) Synopsis() string {

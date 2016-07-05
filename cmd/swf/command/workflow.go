@@ -43,7 +43,16 @@ func (this *Workflow) Run(args []string) (exitCode int) {
 }
 
 func (this *Workflow) registerWorkflowType() {
-	swfapi.Default().RegisterWorkflowType()
+	input := &swfapi.RegisterWorkflowTypeInput{
+		WorkflowType: this.workflowType,
+	}
+	_, err := swfapi.Default().RegisterWorkflowType(input)
+	if err != nil {
+		this.Ui.Error(err.Error())
+		return
+	}
+
+	this.Ui.Info("registered")
 }
 
 func (this *Workflow) listWorkflowTypes() {

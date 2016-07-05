@@ -47,7 +47,16 @@ func (this *Activity) listActivityTypes() {
 }
 
 func (this *Activity) registerActivityType() {
-	swfapi.Default().RegisterActivityType()
+	input := &swfapi.RegisterActivityTypeInput{
+		ActivityType: this.activityType,
+	}
+	_, err := swfapi.Default().RegisterActivityType(input)
+	if err != nil {
+		this.Ui.Error(err.Error())
+		return
+	}
+
+	this.Ui.Info("registered")
 }
 
 func (*Activity) Synopsis() string {
