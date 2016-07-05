@@ -64,6 +64,19 @@ func (this *webServer) Router() *httprouter.Router {
 	return this.router
 }
 
+func (this *webServer) start() (err error) {
+	this.httpListener, err = net.Listen("tcp", this.httpServer.Addr)
+	if err != nil {
+		return
+	}
+
+	go func() {
+		this.httpServer.Serve(this.httpListener)
+	}()
+
+	return nil
+}
+
 func (this *webServer) notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	log.Error("%s: not found %s", this.name, r.RequestURI)
 
