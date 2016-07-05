@@ -24,7 +24,7 @@ How to use SWF?
 How can I get help?
     %s <command> -h
 
-`, this.Cmd, this.Cmd)
+`, this.Cmd)
 
 	this.Ui.Output(strings.TrimSpace(content))
 

@@ -6,24 +6,43 @@ import (
 	"strings"
 
 	"github.com/funkygao/gocli"
+	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/swf-go/v1"
 )
 
 type Kickoff struct {
 	Ui  cli.Ui
 	Cmd string
 
-	workflowId string
-	input      string
+	workflowId   string
+	input        string
+	workflowType models.WorkflowType
 }
 
 func (this *Kickoff) Run(args []string) (exitCode int) {
+	var workflowType string
 	cmdFlags := flag.NewFlagSet("kickoff", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
+	cmdFlags.StringVar(&this.workflowId, "workflow-id", "", "")
+	cmdFlags.StringVar(&this.input, "input", "", "")
+	cmdFlags.StringVar(&workflowType, "workflow-type", "", "")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
 	}
 
+	parts := strings.SplitN(workflowType, ",", 2)
+	this.workflowType.Name = parts[0]
+	if len(parts) > 1 {
+		this.workflowType.Version = parts[1]
+	}
+
+	this.startExecution()
+
 	return
+}
+
+func (this *Kickoff) startExecution() {
+	swf.Default().StartWorkflowExecution()
 }
 
 func (*Kickoff) Synopsis() string {
