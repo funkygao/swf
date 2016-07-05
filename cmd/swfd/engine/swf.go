@@ -1,4 +1,4 @@
-package swf
+package engine
 
 // Swf is the SimpleWorkFlow server.
 type Swf struct {

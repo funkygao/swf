@@ -1,18 +1,26 @@
-package swf
+package engine
 
 import (
+	"io"
 	"net/http"
 
+	"github.com/funkygao/swf/models"
 	"github.com/julienschmidt/httprouter"
 )
 
 func (this *apiServer) mainEntryPoint(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	// X-Amz-Target: SimpleWorkflowService.StartWorkflowExecution
 	// X-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,Algorithm=HmacSHA256,SignedHeaders=Host;X-Amz-Date;X-Amz-Target;Content-Encoding,Signature=aYxuqLX+TO91kPVg+jh+aA8PWxQazQRN2+SZUGdOgU0=
+	body := make([]byte, 0, int(r.ContentLength))
+	io.ReadAtLeast(r.Body, body, int(r.ContentLength))
 
 	api := r.Header.Get("X-Swf-Api")
 	switch api {
 	case opStartWorkflowExecution:
+		input := &models.StartWorkflowExecutionInput{}
+		input.From(body)
+		this.startWorkflowExecution(input)
+
 	case opPollForActivityTask:
 	case opPollForDecisionTask:
 	case opRecordActivityTaskHeartbeat:
@@ -24,7 +32,9 @@ func (this *apiServer) mainEntryPoint(w http.ResponseWriter, r *http.Request, pa
 	}
 }
 
-func (this *apiServer) startWorkflowExecution(queue string, workflowId string, input string) {
+func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
+	output *models.StartWorkflowExecutionOutput, err error) {
+	return nil, nil
 
 }
 

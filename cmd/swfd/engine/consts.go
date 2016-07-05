@@ -1,4 +1,4 @@
-package swf
+package engine
 
 const (
 	opRegisterActivityType = "RegisterActivityType"

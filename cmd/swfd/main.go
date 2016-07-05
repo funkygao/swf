@@ -9,18 +9,18 @@ import (
 	"time"
 
 	"github.com/funkygao/swf"
-	"github.com/funkygao/swf/cmd/swfd/swf"
+	"github.com/funkygao/swf/cmd/swfd/engine"
 )
 
 func init() {
-	swf.ParseFlags()
+	engine.ParseFlags()
 
-	if swf.Options.ShowVersion {
-		fmt.Fprintf(os.Stderr, "%s-%s\n", gafka.Version, gafka.BuildId)
+	if engine.Options.ShowVersion {
+		fmt.Fprintf(os.Stderr, "%s-%s\n", swf.Version, swf.BuildId)
 		os.Exit(0)
 	}
 
-	if gafka.BuildId == "" {
+	if swf.BuildId == "" {
 		fmt.Fprintf(os.Stderr, "empty BuildId, please rebuild with build.sh\n")
 	}
 
@@ -30,7 +30,7 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	swf.ValidateFlags()
+	engine.ValidateFlags()
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
@@ -40,5 +40,5 @@ func main() {
 
 	fmt.Fprintln(os.Stderr, strings.TrimSpace(logo))
 
-	swf.New().ServeForever()
+	engine.New().ServeForever()
 }

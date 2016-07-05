@@ -37,6 +37,10 @@ type StartWorkflowExecutionInput struct {
 	WorkflowType WorkflowType
 }
 
+func (this *StartWorkflowExecutionInput) From(payload []byte) {
+	json.Unmarshal(payload, this)
+}
+
 type StartWorkflowExecutionOutput struct {
 	RunId string `json:"run_id"`
 }
