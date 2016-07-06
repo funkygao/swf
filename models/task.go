@@ -1,12 +1,12 @@
 package models
 
 type ActivityTask struct {
-	activityId        string // 1-256
-	activityType      ActivityType
-	input             string
-	startedEventId    int64
-	taskToken         string
-	workflowExecution WorkflowExecution
+	ActivityId        string // 1-256
+	ActivityType      ActivityType
+	Input             string
+	StartedEventId    int64
+	TaskToken         string
+	WorkflowExecution WorkflowExecution
 }
 
 type DecisionTask struct {

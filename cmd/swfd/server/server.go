@@ -1,4 +1,4 @@
-package engine
+package server
 
 import (
 	"net/http"
@@ -6,22 +6,22 @@ import (
 	log "github.com/funkygao/log4go"
 )
 
-// Engine is the SimpleWorkFlow server engine.
-type Engine struct {
+// Server is the SimpleWorkFlow server engine.
+type Server struct {
 	apiServer *apiServer
 
 	shutdownChan chan struct{}
 }
 
-func New() *Engine {
-	this := &Engine{
+func New() *Server {
+	this := &Server{
 		apiServer:    newApiServer(),
 		shutdownChan: make(chan struct{}),
 	}
 	return this
 }
 
-func (this *Engine) setupApis() {
+func (this *Server) setupApis() {
 	m := this.Middleware
 
 	if this.apiServer != nil {
@@ -32,7 +32,7 @@ func (this *Engine) setupApis() {
 
 }
 
-func (this *Engine) start() error {
+func (this *Server) start() error {
 	this.setupApis()
 	if err := this.apiServer.start(); err != nil {
 		return err
@@ -43,7 +43,7 @@ func (this *Engine) start() error {
 	return nil
 }
 
-func (this *Engine) ServeForever() {
+func (this *Server) ServeForever() {
 	if err := this.start(); err != nil {
 		log.Error("fail to start: %v", err)
 		return

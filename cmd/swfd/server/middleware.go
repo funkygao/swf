@@ -1,4 +1,4 @@
-package engine
+package server
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (this *Engine) Middleware(h httprouter.Handle) httprouter.Handle {
+func (this *Server) Middleware(h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		w.Header().Set("Server", "swf")
 		w.Header().Set("Content-Type", "application/json; charset=utf8")

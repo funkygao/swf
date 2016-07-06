@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/funkygao/swf"
-	"github.com/funkygao/swf/cmd/swfd/engine"
+	"github.com/funkygao/swf/cmd/swfd/server"
 )
 
 func init() {
-	engine.ParseFlags()
+	server.ParseFlags()
 
-	if engine.Options.ShowVersion {
+	if server.Options.ShowVersion {
 		fmt.Fprintf(os.Stderr, "%s-%s\n", swf.Version, swf.BuildId)
 		os.Exit(0)
 	}
@@ -30,7 +30,7 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	engine.ValidateFlags()
+	server.ValidateFlags()
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
@@ -40,5 +40,5 @@ func main() {
 
 	fmt.Fprintln(os.Stderr, strings.TrimSpace(logo))
 
-	engine.New().ServeForever()
+	server.New().ServeForever()
 }
