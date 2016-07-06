@@ -8,7 +8,7 @@ import (
 )
 
 func (this *Client) RegisterWorkflowType(input *models.RegisterWorkflowTypeInput) (*models.RegisterWorkflowTypeOutput, error) {
-	resp, body, err := this.call(models.OpRegisterWorkflowType, input)
+	resp, body, err := this.invoke(models.OpRegisterWorkflowType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
 	}
@@ -23,7 +23,7 @@ func (this *Client) RegisterWorkflowType(input *models.RegisterWorkflowTypeInput
 }
 
 func (this *Client) RegisterActivityType(input *models.RegisterActivityTypeInput) (*models.RegisterActivityTypeOutput, error) {
-	resp, body, err := this.call(models.OpRegisterActivityType, input)
+	resp, body, err := this.invoke(models.OpRegisterActivityType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
 	}
@@ -38,7 +38,7 @@ func (this *Client) RegisterActivityType(input *models.RegisterActivityTypeInput
 }
 
 func (this *Client) StartWorkflowExecution(input *models.StartWorkflowExecutionInput) (*models.StartWorkflowExecutionOutput, error) {
-	resp, body, err := this.call(models.OpRegisterActivityType, input)
+	resp, body, err := this.invoke(models.OpRegisterActivityType, input)
 	if len(err) >= 1 {
 		return nil, err[0]
 	}
@@ -72,14 +72,14 @@ func (this *Client) ListWorkflowTypes() {
 
 }
 
+func (this *Client) ListActivityTypes() {
+
+}
+
 func (this *Client) ListWorkflowExecutions(openOrClose bool) {
 
 }
 
 func (this *Client) GetWorkflowExecutionHistory() {
-
-}
-
-func (this *Client) ListActivityTypes() {
 
 }

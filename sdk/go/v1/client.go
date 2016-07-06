@@ -17,7 +17,7 @@ func Default() *Client {
 	return &Client{cf: NewConfig()}
 }
 
-func (this *Client) call(op string, payload interface{}) (gorequest.Response, []byte, []error) {
+func (this *Client) invoke(op string, payload interface{}) (gorequest.Response, []byte, []error) {
 	agent := gorequest.New()
 	return agent.Post(this.cf.Endpoint).
 		Set("User-Agent", "swf-go:"+swf.Version).

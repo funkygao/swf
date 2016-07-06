@@ -7,6 +7,8 @@ import (
 	"github.com/funkygao/gafka/mpool"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/services/manager"
+	"github.com/funkygao/swf/services/supervisor"
 	"github.com/funkygao/swf/utils"
 	"github.com/julienschmidt/httprouter"
 )
@@ -128,12 +130,17 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
 	output *models.RegisterWorkflowTypeOutput, err error) {
+	manager.Default.RegisterWorkflowType()
+	supervisor.Default.NotifySupervisor() // so that it can consume the new decider channel
+
 	output = &models.RegisterWorkflowTypeOutput{}
 	return
 }
 
 func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
 	output *models.RegisterActivityTypeOutput, err error) {
+	manager.Default.RegisterActivityType()
+
 	output = &models.RegisterActivityTypeOutput{}
 	return
 }
@@ -143,6 +150,8 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 	// fire WorkflowExecutionStarted Event
 	// fire DecisionTaskScheduled Event
 	// and schedules the 1st decision task
+	supervisor.Default.NotifySupervisor()
+
 	output = &models.StartWorkflowExecutionOutput{}
 	return
 }
@@ -164,6 +173,8 @@ func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivit
 	output *models.RespondActivityTaskCompletedOutput, err error) {
 	// fire ActivityTaskCompleted Event
 	// fire DecisionTaskScheduled Event
+	supervisor.Default.NotifySupervisor()
+
 	output = &models.RespondActivityTaskCompletedOutput{}
 	return
 }
@@ -172,6 +183,8 @@ func (this *apiServer) respondDecisionTaskCompleted(input *models.RespondDecisio
 	output *models.RespondDecisionTaskCompletedOutput, err error) {
 	// ScheduleActivityTask Decision
 	// fire ActivityTaskScheduled Event
+	supervisor.Default.NotifySupervisor()
+
 	output = &models.RespondDecisionTaskCompletedOutput{}
 	return
 }

@@ -12,6 +12,8 @@ func New() supervisor.Service {
 }
 
 func (this *Supervisor) Start() error {
+	// watch Decider topics
+	// consume supervisor topic
 	return nil
 }
 

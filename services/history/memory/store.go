@@ -4,17 +4,17 @@ import (
 	"github.com/funkygao/swf/services/historystore"
 )
 
-type HistoryStore struct {
+type History struct {
 }
 
 func New() historystore.Service {
-	return &HistoryStore{}
+	return &History{}
 }
 
-func (this *HistoryStore) Start() error {
+func (this *History) Start() error {
 	return nil
 }
 
-func (this *HistoryStore) Stop() {
+func (this *History) Stop() {
 
 }

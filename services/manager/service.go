@@ -7,6 +7,12 @@ import (
 
 type Service interface {
 	services.Service
+
+	RegisterWorkflowType()
+	RegisterActivityType()
+
+	GetWorkflowType(models.WorkflowType)
+	GetActivityType(models.ActivityType)
 }
 
 var Default Service
