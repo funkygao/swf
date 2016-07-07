@@ -8,11 +8,11 @@ import (
 type Service interface {
 	services.Service
 
-	RegisterWorkflowType()
-	RegisterActivityType()
+	RegisterActivityType(t *models.ActivityType) (err error)
+	RegisterWorkflowType(t *models.WorkflowType) (err error)
 
-	GetWorkflowType(models.WorkflowType)
-	GetActivityType(models.ActivityType)
+	GetActivityType(t *models.ActivityType) (r *models.ActivityType, err error)
+	GetWorkflowType(t *models.WorkflowType) (r *models.WorkflowType, err error)
 }
 
 var Default Service

@@ -57,11 +57,20 @@ func (this *Server) start() error {
 	this.setupApis()
 	this.setupServices()
 
+	// start all the services before serving clients
+	for _, svc := range this.services {
+		go func() {
+			if err := svc.Start(); err != nil {
+				panic(err)
+			}
+		}()
+	}
+
 	if err := this.apiServer.start(); err != nil {
 		return err
 	}
 
-	log.Info("engine ready")
+	log.Info("server ready")
 
 	return nil
 }
