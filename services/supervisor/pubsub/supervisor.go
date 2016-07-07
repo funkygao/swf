@@ -5,10 +5,13 @@ import (
 )
 
 type Supervisor struct {
+	cf *config
 }
 
-func New() supervisor.Service {
-	return &Supervisor{}
+func New(cf *config) supervisor.Service {
+	return &Supervisor{
+		cf: cf,
+	}
 }
 
 func (this *Supervisor) Start() error {

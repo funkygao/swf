@@ -44,6 +44,13 @@ func init() {
 			}, nil
 		},
 
+		"generate": func() (cli.Command, error) {
+			return &command.Generate{
+				Ui:  ui,
+				Cmd: cmd,
+			}, nil
+		},
+
 		"kickoff": func() (cli.Command, error) {
 			return &command.Kickoff{
 				Ui:  ui,
