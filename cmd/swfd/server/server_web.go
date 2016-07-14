@@ -9,6 +9,8 @@ import (
 )
 
 type webServer struct {
+	ctx *Server
+
 	name string
 
 	router *httprouter.Router
@@ -20,8 +22,9 @@ type webServer struct {
 	httpsServer   *http.Server
 }
 
-func newWebServer(name string, httpAddr, httpsAddr string) *webServer {
+func newWebServer(ctx *Server, name string, httpAddr, httpsAddr string) *webServer {
 	this := &webServer{
+		ctx:    ctx,
 		name:   name,
 		router: httprouter.New(),
 	}

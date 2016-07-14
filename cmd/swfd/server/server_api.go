@@ -9,9 +9,9 @@ type apiServer struct {
 	*webServer
 }
 
-func newApiServer() *apiServer {
+func newApiServer(ctx *Server) *apiServer {
 	this := &apiServer{
-		webServer: newWebServer("api", Options.ApiHttpAddr, Options.ApiHttpsAddr),
+		webServer: newWebServer(ctx, "api", Options.ApiHttpAddr, Options.ApiHttpsAddr),
 	}
 
 	return this

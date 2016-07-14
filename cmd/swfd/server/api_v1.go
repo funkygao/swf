@@ -3,6 +3,7 @@ package server
 import (
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/funkygao/gafka/mpool"
 	log "github.com/funkygao/log4go"
@@ -123,6 +124,7 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 
 	default:
 		this.notFoundHandler(w, r)
+		return
 	}
 
 	w.Write(resp.Bytes())
@@ -158,8 +160,14 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 	// generate runId
 	supervisor.Default.NotifySupervisor()
 
+	var runId int64
+	runId, err = this.ctx.idgen.Next()
+	if err != nil {
+		return
+	}
+
 	output = &models.StartWorkflowExecutionOutput{
-		RunId: "1",
+		RunId: strconv.FormatInt(runId, 10),
 	}
 
 	log.Debug("startWorkflowExecution %#v -> %#v", input, output)

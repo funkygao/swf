@@ -6,6 +6,7 @@ import (
 
 	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gafka/zk"
+	"github.com/funkygao/golib/idgen"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/services"
 	"github.com/funkygao/swf/services/history"
@@ -22,6 +23,7 @@ type Server struct {
 	services  []services.Service
 
 	zkzone *zk.ZkZone
+	idgen  *idgen.IdGenerator
 
 	shutdownChan chan struct{}
 }
@@ -34,10 +36,15 @@ func init() {
 
 func New() *Server {
 	this := &Server{
-		apiServer:    newApiServer(),
 		services:     make([]services.Service, 0),
 		zkzone:       zk.NewZkZone(zk.DefaultConfig(Options.Zone, ctx.ZoneZkAddrs(Options.Zone))),
 		shutdownChan: make(chan struct{}),
+	}
+	this.apiServer = newApiServer(this)
+	var err error
+	this.idgen, err = idgen.NewIdGenerator(1)
+	if err != nil {
+		panic(err)
 	}
 
 	return this
