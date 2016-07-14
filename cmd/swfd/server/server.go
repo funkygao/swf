@@ -1,12 +1,19 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gafka/zk"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/services"
+	"github.com/funkygao/swf/services/history"
+	hm "github.com/funkygao/swf/services/history/memory"
+	"github.com/funkygao/swf/services/manager"
+	mm "github.com/funkygao/swf/services/manager/memory"
+	"github.com/funkygao/swf/services/supervisor"
+	ps "github.com/funkygao/swf/services/supervisor/pubsub"
 )
 
 // Server is the SimpleWorkFlow server engine.
@@ -21,6 +28,8 @@ type Server struct {
 
 func init() {
 	ctx.LoadFromHome()
+
+	log.AddFilter("stdout", log.DEBUG, log.NewConsoleLogWriter())
 }
 
 func New() *Server {
@@ -46,7 +55,14 @@ func (this *Server) setupApis() {
 }
 
 func (this *Server) setupServices() {
+	manager.Default = mm.New()
+	this.addService(manager.Default)
 
+	history.Default = hm.New()
+	this.addService(history.Default)
+
+	supervisor.Default = ps.New(ps.NewConfig())
+	this.addService(supervisor.Default)
 }
 
 func (this *Server) addService(svc services.Service) {
@@ -59,11 +75,13 @@ func (this *Server) start() error {
 
 	// start all the services before serving clients
 	for _, svc := range this.services {
-		go func() {
+		go func(svc services.Service) {
 			if err := svc.Start(); err != nil {
-				panic(err)
+				panic(fmt.Sprintf("service[%s]: %v", svc.Name(), err))
+			} else {
+				log.Trace("service[%s] started", svc.Name())
 			}
-		}()
+		}(svc)
 	}
 
 	if err := this.apiServer.start(); err != nil {

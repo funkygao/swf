@@ -38,7 +38,7 @@ func (this *Client) RegisterActivityType(input *models.RegisterActivityTypeInput
 }
 
 func (this *Client) StartWorkflowExecution(input *models.StartWorkflowExecutionInput) (*models.StartWorkflowExecutionOutput, error) {
-	resp, body, err := this.invoke(models.OpRegisterActivityType, input)
+	resp, body, err := this.invoke(models.OpStartWorkflowExecution, input)
 	if len(err) >= 1 {
 		return nil, err[0]
 	}

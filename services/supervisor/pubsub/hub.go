@@ -2,6 +2,7 @@ package pubsub
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/funkygao/gafka/cmd/kateway/api/v1"
 	log "github.com/funkygao/log4go"
@@ -19,10 +20,7 @@ func (this *Supervisor) notify(topic, ver string, msg []byte) {
 }
 
 func (this *Supervisor) notifyWorker(topic, ver string, msg []byte) {
-	this.client.Pub("", msg, api.PubOption{
-		Topic: topic,
-		Ver:   ver,
-	})
+
 }
 
 func (this *Supervisor) notifyDecider() {
@@ -49,6 +47,7 @@ func (this *Supervisor) recvNotification() {
 
 		}); err != nil {
 			log.Error("recv notification: %v", err)
+			time.Sleep(time.Minute)
 		} else {
 			break
 		}
@@ -82,6 +81,7 @@ func (this *Supervisor) recvDecisions() {
 			return nil
 		}); err != nil {
 			log.Error("recv decisions: %v", err)
+			time.Sleep(time.Minute)
 		} else {
 			break
 		}

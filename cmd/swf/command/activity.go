@@ -32,11 +32,15 @@ func (this *Activity) Run(args []string) (exitCode int) {
 	}
 
 	switch {
-	case listMode:
-		this.listActivityTypes()
 
 	case registerMode:
 		this.registerActivityType()
+
+	case listMode:
+		this.listActivityTypes()
+
+	default:
+		this.Ui.Error("unknown operation")
 	}
 
 	return
@@ -50,6 +54,7 @@ func (this *Activity) registerActivityType() {
 	input := &models.RegisterActivityTypeInput{
 		ActivityType: this.activityType,
 	}
+
 	_, err := swfapi.Default().RegisterActivityType(input)
 	if err != nil {
 		this.Ui.Error(err.Error())
