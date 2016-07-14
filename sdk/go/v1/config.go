@@ -1,11 +1,19 @@
 package swfapi
 
+import (
+	"github.com/funkygao/gafka/ctx"
+)
+
 type config struct {
-	Endpoint string
+	zone string
 }
 
-func NewConfig() *config {
+func NewConfig(zone string) *config {
 	return &config{
-		Endpoint: "http://192.168.10.134:9195/v1",
+		zone: zone,
 	}
+}
+
+func (this config) Endpoint() string {
+	return ctx.Zone(this.zone).SwfEndpoint
 }

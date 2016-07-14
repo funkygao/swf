@@ -1,8 +1,7 @@
 package swfapi
 
 import (
-	"github.com/funkygao/swf"
-	"github.com/parnurzeal/gorequest"
+	"github.com/funkygao/gafka/ctx"
 )
 
 type Client struct {
@@ -13,15 +12,10 @@ func New(cf *config) *Client {
 	return &Client{cf: cf}
 }
 
-func Default() *Client {
-	return &Client{cf: NewConfig()}
+func WithZone(zone string) *Client {
+	return &Client{cf: NewConfig(zone)}
 }
 
-func (this *Client) invoke(op string, payload interface{}) (gorequest.Response, []byte, []error) {
-	agent := gorequest.New()
-	return agent.Post(this.cf.Endpoint).
-		Set("User-Agent", "swf-go:"+swf.Version).
-		Set("X-Swf-Api", op).
-		SendStruct(payload).
-		EndBytes()
+func Default() *Client {
+	return &Client{cf: NewConfig(ctx.DefaultZone())}
 }

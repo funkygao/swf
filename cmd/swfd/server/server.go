@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	psub "github.com/funkygao/gafka/cmd/kateway/api/v1"
 	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gafka/zk"
 	"github.com/funkygao/golib/idgen"
@@ -24,6 +25,8 @@ type Server struct {
 
 	zkzone *zk.ZkZone
 	idgen  *idgen.IdGenerator
+
+	pubsub *psub.Client
 
 	shutdownChan chan struct{}
 }
@@ -103,6 +106,7 @@ func (this *Server) start() error {
 func (this *Server) stop() {
 	for _, svc := range this.services {
 		svc.Stop()
+		log.Trace("service[%s] stopped", svc.Name())
 	}
 }
 
@@ -113,4 +117,5 @@ func (this *Server) ServeForever() {
 	}
 
 	<-this.shutdownChan
+	this.stop()
 }

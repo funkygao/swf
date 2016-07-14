@@ -1,6 +1,6 @@
 package swf
 
 var (
-	Version string
-	BuildId string
+	Version string = "unknown"
+	BuildId string = "?"
 )

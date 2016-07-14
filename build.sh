@@ -11,7 +11,7 @@ GCDEBUG="no"
 RACE="no"
 QA="no"
 VALIDATE="no"
-TARGET="swf"
+TARGET="swfd"
 PREFIX=$GOPATH
 
 show_line_of_code() {

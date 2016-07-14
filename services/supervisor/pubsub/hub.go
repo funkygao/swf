@@ -6,9 +6,21 @@ import (
 
 	"github.com/funkygao/gafka/cmd/kateway/api/v1"
 	log "github.com/funkygao/log4go"
+	"github.com/funkygao/swf/models"
 )
 
-func (this *Supervisor) NotifySupervisor() {
+func (this *Supervisor) NotifySupervisor(sth interface{}) {
+	switch m := sth.(type) {
+	case *models.RegisterWorkflowTypeInput:
+
+	case *models.RegisterActivityTypeInput:
+
+	case *models.StartWorkflowExecutionInput:
+
+	default:
+		log.Error("unkown type: %T", m)
+
+	}
 
 }
 

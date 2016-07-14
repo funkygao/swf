@@ -10,51 +10,37 @@ import (
 
 var (
 	Options struct {
-		Id                      string
-		Zone                    string
-		ApiHttpAddr             string
-		ApiHttpsAddr            string
-		Store                   string
-		ManagerStore            string
-		PidFile                 string
-		CertFile                string
-		KeyFile                 string
-		LogFile                 string
-		LogLevel                string
-		CrashLogFile            string
-		InfluxServer            string
-		InfluxDbName            string
-		ShowVersion             bool
-		Ratelimit               bool
-		PermitStandbySub        bool
-		DisableMetrics          bool
-		EnableGzip              bool
-		DryRun                  bool
-		CpuAffinity             bool
-		EnableAccessLog         bool
-		EnableHttpPanicRecover  bool
-		EnableClientStats       bool
-		GolangTrace             bool
-		PermitUnregisteredGroup bool
-		Debug                   bool
-		HttpHeaderMaxBytes      int
-		MaxPubSize              int64
-		LogRotateSize           int
-		MaxMsgTagLen            int
-		MinPubSize              int
-		MaxPubRetries           int
-		PubQpsLimit             int
-		MaxClients              int
-		MaxRequestPerConn       int // to make load balancer distribute request even for persistent conn
-		PubPoolCapcity          int
-		PubPoolIdleTimeout      time.Duration
-		SubTimeout              time.Duration
-		OffsetCommitInterval    time.Duration
-		ReporterInterval        time.Duration
-		MetaRefresh             time.Duration
-		ManagerRefresh          time.Duration
-		HttpReadTimeout         time.Duration
-		HttpWriteTimeout        time.Duration
+		Id                     string
+		Zone                   string
+		ApiHttpAddr            string
+		ApiHttpsAddr           string
+		Store                  string
+		ManagerStore           string
+		PidFile                string
+		CertFile               string
+		KeyFile                string
+		LogFile                string
+		LogLevel               string
+		CrashLogFile           string
+		InfluxServer           string
+		InfluxDbName           string
+		ShowVersion            bool
+		Ratelimit              bool
+		DisableMetrics         bool
+		EnableGzip             bool
+		DryRun                 bool
+		EnableAccessLog        bool
+		EnableHttpPanicRecover bool
+		Debug                  bool
+		HttpHeaderMaxBytes     int
+		LogRotateSize          int
+		MaxMsgTagLen           int
+		MaxClients             int
+		MaxRequestPerConn      int // to make load balancer distribute request even for persistent conn
+		ReporterInterval       time.Duration
+		ManagerRefresh         time.Duration
+		HttpReadTimeout        time.Duration
+		HttpWriteTimeout       time.Duration
 	}
 )
 

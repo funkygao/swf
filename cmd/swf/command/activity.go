@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gocli"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/sdk/go/v1"
@@ -14,63 +15,62 @@ type Activity struct {
 	Ui  cli.Ui
 	Cmd string
 
-	activityType models.ActivityType
+	listMode            bool
+	zone, cluster       string
+	regName, regVersion string
 }
 
 func (this *Activity) Run(args []string) (exitCode int) {
-	var (
-		registerMode, listMode bool
-	)
 	cmdFlags := flag.NewFlagSet("activity", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
-	cmdFlags.BoolVar(&registerMode, "register", false, "")
-	cmdFlags.BoolVar(&listMode, "list", true, "")
-	cmdFlags.StringVar(&this.activityType.Name, "name", "", "")
-	cmdFlags.StringVar(&this.activityType.Version, "version", "", "")
+	cmdFlags.StringVar(&this.regName, "register", "", "")
+	cmdFlags.StringVar(&this.regVersion, "version", "v1", "")
+	cmdFlags.BoolVar(&this.listMode, "list", false, "")
+	cmdFlags.StringVar(&this.zone, "z", ctx.DefaultZone(), "")
+	cmdFlags.StringVar(&this.cluster, "c", "", "")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
 	}
 
-	switch {
-
-	case registerMode:
-		this.registerActivityType()
-
-	case listMode:
+	if this.listMode {
 		this.listActivityTypes()
+		return
+	}
 
-	default:
-		this.Ui.Error("unknown operation")
+	if this.regName != "" {
+		this.registerActivityType()
+		return
 	}
 
 	return
 }
 
 func (this *Activity) listActivityTypes() {
-	swfapi.Default().ListActivityTypes()
+	swfapi.WithZone(this.zone).ListActivityTypes()
 }
 
 func (this *Activity) registerActivityType() {
-	input := &models.RegisterActivityTypeInput{
-		ActivityType: this.activityType,
-	}
+	input := &models.RegisterActivityTypeInput{}
+	input.Cluster = this.cluster
+	input.Name = this.regName
+	input.Version = this.regVersion
 
-	_, err := swfapi.Default().RegisterActivityType(input)
+	_, err := swfapi.WithZone(this.zone).RegisterActivityType(input)
 	if err != nil {
 		this.Ui.Error(err.Error())
 		return
 	}
 
-	this.Ui.Info("registered")
+	this.Ui.Info("activity type registered")
 }
 
 func (*Activity) Synopsis() string {
-	return "Register/List/Modify activity and activity type."
+	return "Register/List/Modify activity type."
 }
 
 func (this *Activity) Help() string {
 	help := fmt.Sprintf(`
-Usage: %s activity [options]
+Usage: %s activity -z <zone> -c <cluster> [options]
 
     %s
 
@@ -79,7 +79,6 @@ Usage: %s activity [options]
 
       -version <version>
 
-      [-description <value>]
 
     -list
 

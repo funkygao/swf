@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gocli"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/sdk/go/v1"
@@ -14,15 +15,17 @@ type Kickoff struct {
 	Ui  cli.Ui
 	Cmd string
 
-	workflowId   string
-	input        string
-	workflowType models.WorkflowType
+	workflowId    string
+	input         string
+	zone, cluster string
+	workflowType  models.WorkflowType
 }
 
 func (this *Kickoff) Run(args []string) (exitCode int) {
 	var workflowType string
 	cmdFlags := flag.NewFlagSet("kickoff", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
+	cmdFlags.StringVar(&this.zone, "z", ctx.DefaultZone(), "")
 	cmdFlags.StringVar(&this.workflowId, "workflow-id", "", "")
 	cmdFlags.StringVar(&this.input, "input", "", "")
 	cmdFlags.StringVar(&workflowType, "workflow-type", "", "")
@@ -47,7 +50,7 @@ func (this *Kickoff) startExecution() {
 		WorkflowId:   this.workflowId,
 		WorkflowType: this.workflowType,
 	}
-	output, err := swfapi.Default().StartWorkflowExecution(input)
+	output, err := swfapi.WithZone(this.zone).StartWorkflowExecution(input)
 	if err != nil {
 		this.Ui.Error(err.Error())
 		return
@@ -62,7 +65,7 @@ func (*Kickoff) Synopsis() string {
 
 func (this *Kickoff) Help() string {
 	help := fmt.Sprintf(`
-Usage: %s kickoff [options]
+Usage: %s kickoff -z <zone> [options]
 
     %s
 
@@ -76,8 +79,6 @@ Usage: %s kickoff [options]
     -input <data>
       The input for the workflow execution.
       This is a free form string which should be meaningful to the workflow you are starting.
-
-    -queue <queue>
 
 `, this.Cmd, this.Synopsis())
 	return strings.TrimSpace(help)

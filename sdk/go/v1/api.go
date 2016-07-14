@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/funkygao/swf"
 	"github.com/funkygao/swf/models"
+	"github.com/parnurzeal/gorequest"
 )
 
 func (this *Client) RegisterWorkflowType(input *models.RegisterWorkflowTypeInput) (*models.RegisterWorkflowTypeOutput, error) {
@@ -82,4 +84,13 @@ func (this *Client) ListWorkflowExecutions(openOrClose bool) {
 
 func (this *Client) GetWorkflowExecutionHistory() {
 
+}
+
+func (this *Client) invoke(op string, payload interface{}) (gorequest.Response, []byte, []error) {
+	agent := gorequest.New()
+	return agent.Post(this.cf.Endpoint()).
+		Set("User-Agent", "swf-go:"+swf.Version).
+		Set("X-Swf-Api", op).
+		SendStruct(payload).
+		EndBytes()
 }
