@@ -12,6 +12,10 @@ func (this *Supervisor) NotifySupervisor() {
 
 }
 
+func (this *Supervisor) AddTopic(cluster, topic, ver string) error {
+	return this.client.AddTopic(cluster, "appid", topic, ver)
+}
+
 func (this *Supervisor) notify(topic, ver string, msg []byte) {
 	this.client.Pub("", msg, api.PubOption{
 		Topic: topic,

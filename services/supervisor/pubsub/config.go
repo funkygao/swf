@@ -1,12 +1,18 @@
 package pubsub
 
 type config struct {
-	PubsubEndpoint string
-	Appid, Secret  string
+	PubEndpoint   string
+	SubEndpoint   string
+	AdminEndpoint string
+	Appid, Secret string
 }
 
 func NewConfig() *config {
-	return &config{}
+	return &config{
+		PubEndpoint:   "localhost:9191",
+		SubEndpoint:   "localhost:9192",
+		AdminEndpoint: "localhost:9193",
+	}
 }
 
 func (this *config) decisionQueue() string {

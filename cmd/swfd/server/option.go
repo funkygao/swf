@@ -66,7 +66,7 @@ func ParseFlags() {
 
 	flag.StringVar(&Options.Id, "id", "", "kateway id, the id must be unique within a host")
 	flag.StringVar(&Options.Zone, "zone", "", "kafka zone name")
-	flag.StringVar(&Options.ApiHttpAddr, "http", fmt.Sprintf("%s:9191", ip.String()), "http bind addr")
+	flag.StringVar(&Options.ApiHttpAddr, "http", fmt.Sprintf("%s:9195", ip.String()), "http bind addr")
 	flag.StringVar(&Options.ApiHttpsAddr, "https", "", "https bind addr")
 	flag.StringVar(&Options.LogLevel, "level", "trace", "log level")
 	flag.StringVar(&Options.LogFile, "log", "stdout", "log file, default stdout")

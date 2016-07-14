@@ -8,7 +8,8 @@ import (
 )
 
 type Supervisor struct {
-	cf     *config
+	cf *config
+
 	client *api.Client
 
 	decisionCh, notificationCh chan []byte
@@ -25,6 +26,9 @@ func New(cf *config) supervisor.Service {
 	}
 
 	c := api.DefaultConfig(cf.Appid, cf.Secret)
+	c.Pub.Endpoint = cf.PubEndpoint
+	c.Sub.Endpoint = cf.SubEndpoint
+	c.Admin.Endpoint = cf.AdminEndpoint
 	this.client = api.NewClient(c)
 	return this
 }

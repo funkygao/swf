@@ -134,6 +134,10 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 	output *models.RegisterWorkflowTypeOutput, err error) {
 	manager.Default.RegisterWorkflowType(&input.WorkflowType)
 
+	if err = supervisor.Default.AddTopic("me", input.Name+"_w", "v1"); err != nil {
+		return
+	}
+
 	output = &models.RegisterWorkflowTypeOutput{}
 
 	log.Debug("registerWorkflowType %#v -> %#v", input, output)
@@ -144,6 +148,10 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
 	output *models.RegisterActivityTypeOutput, err error) {
 	manager.Default.RegisterActivityType(&input.ActivityType)
+
+	if err = supervisor.Default.AddTopic("me", input.Name+"_a", "v1"); err != nil {
+		return
+	}
 
 	output = &models.RegisterActivityTypeOutput{}
 

@@ -9,6 +9,7 @@ type Service interface {
 	services.Service
 
 	NotifySupervisor()
+	AddTopic(cluster, topic, ver string) error
 }
 
 var Default Service
