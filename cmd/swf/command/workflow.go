@@ -32,11 +32,12 @@ func (this *Workflow) Run(args []string) (exitCode int) {
 	}
 
 	switch {
+	case registerMode:
+		this.registerWorkflowType()
+
 	case listMode:
 		this.listWorkflowTypes()
 
-	case registerMode:
-		this.registerWorkflowType()
 	}
 
 	return

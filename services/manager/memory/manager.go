@@ -64,6 +64,10 @@ func New() manager.Service {
 	}
 }
 
+func (this *Manager) Name() string {
+	return "manager"
+}
+
 func (this *Manager) Start() (err error) {
 	if err = this.schema.Validate(); err != nil {
 		return

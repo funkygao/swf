@@ -29,6 +29,10 @@ func New(cf *config) supervisor.Service {
 	return this
 }
 
+func (this *Supervisor) Name() string {
+	return "supervisor"
+}
+
 func (this *Supervisor) Start() error {
 	go this.recvDecisions()
 	go this.recvNotification()

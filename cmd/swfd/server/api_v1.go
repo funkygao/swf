@@ -130,18 +130,23 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
 	output *models.RegisterWorkflowTypeOutput, err error) {
-	manager.Default.RegisterWorkflowType()
-	supervisor.Default.NotifySupervisor() // so that it can consume the new decider channel
+	manager.Default.RegisterWorkflowType(&input.WorkflowType)
 
 	output = &models.RegisterWorkflowTypeOutput{}
+
+	log.Debug("registerWorkflowType %#v -> %#v", input, output)
+
 	return
 }
 
 func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
 	output *models.RegisterActivityTypeOutput, err error) {
-	manager.Default.RegisterActivityType()
+	manager.Default.RegisterActivityType(&input.ActivityType)
 
 	output = &models.RegisterActivityTypeOutput{}
+
+	log.Debug("registerActivityType %#v -> %#v", input, output)
+
 	return
 }
 
@@ -150,9 +155,15 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 	// fire WorkflowExecutionStarted Event
 	// fire DecisionTaskScheduled Event
 	// and schedules the 1st decision task
+	// generate runId
 	supervisor.Default.NotifySupervisor()
 
-	output = &models.StartWorkflowExecutionOutput{}
+	output = &models.StartWorkflowExecutionOutput{
+		RunId: "1",
+	}
+
+	log.Debug("startWorkflowExecution %#v -> %#v", input, output)
+
 	return
 }
 
@@ -160,12 +171,18 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 	output *models.PollForDecisionTaskOutput, err error) {
 	// fire ScheduleActivityTask decision
 	output = &models.PollForDecisionTaskOutput{}
+
+	log.Debug("pollForDecisionTask %#v -> %#v", input, output)
+
 	return
 }
 
 func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInput) (
 	output *models.PollForActivityTaskOutput, err error) {
 	output = &models.PollForActivityTaskOutput{}
+
+	log.Debug("pollForActivityTask %#v -> %#v", input, output)
+
 	return
 }
 
@@ -176,6 +193,9 @@ func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivit
 	supervisor.Default.NotifySupervisor()
 
 	output = &models.RespondActivityTaskCompletedOutput{}
+
+	log.Debug("respondActivityTaskCompleted %#v -> %#v", input, output)
+
 	return
 }
 
@@ -186,6 +206,9 @@ func (this *apiServer) respondDecisionTaskCompleted(input *models.RespondDecisio
 	supervisor.Default.NotifySupervisor()
 
 	output = &models.RespondDecisionTaskCompletedOutput{}
+
+	log.Debug("respondDecisionTaskCompleted %#v -> %#v", input, output)
+
 	return
 }
 
