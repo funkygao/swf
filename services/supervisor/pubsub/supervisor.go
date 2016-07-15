@@ -12,7 +12,7 @@ type Supervisor struct {
 
 	client *api.Client
 
-	decisionCh, notificationCh chan []byte
+	notificationCh chan []byte
 
 	quit chan struct{}
 }
@@ -21,7 +21,6 @@ func New(cf *config) supervisor.Service {
 	this := &Supervisor{
 		cf:             cf,
 		quit:           make(chan struct{}),
-		decisionCh:     make(chan []byte, 1000),
 		notificationCh: make(chan []byte, 1000),
 	}
 
@@ -38,8 +37,8 @@ func (this *Supervisor) Name() string {
 }
 
 func (this *Supervisor) Start() error {
-	go this.recvDecisions()
 	go this.recvNotification()
+
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go this.schedule()
 	}

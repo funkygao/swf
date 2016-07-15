@@ -7,7 +7,7 @@ import (
 type Service interface {
 	services.Service
 
-	NotifySupervisor(interface{})
+	Fire(interface{})
 	AddTopic(cluster, topic, ver string) error
 }
 

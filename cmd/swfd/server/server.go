@@ -6,7 +6,10 @@ import (
 
 	psub "github.com/funkygao/gafka/cmd/kateway/api/v1"
 	"github.com/funkygao/gafka/ctx"
+	"github.com/funkygao/gafka/telementry"
+	"github.com/funkygao/gafka/telementry/influxdb"
 	"github.com/funkygao/gafka/zk"
+	"github.com/funkygao/go-metrics"
 	"github.com/funkygao/golib/idgen"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/services"
@@ -73,6 +76,13 @@ func (this *Server) setupServices() {
 
 	supervisor.Default = ps.New(ps.NewConfig())
 	this.addService(supervisor.Default)
+
+	cf, err := influxdb.NewConfig(Options.InfluxServer, Options.InfluxDbName, "", "", Options.ReporterInterval)
+	if err != nil {
+		panic(err)
+	}
+	telementry.Default = influxdb.New(metrics.DefaultRegistry, cf)
+	this.addService(telementry.Default)
 }
 
 func (this *Server) addService(svc services.Service) {

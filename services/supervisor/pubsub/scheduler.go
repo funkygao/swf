@@ -1,7 +1,7 @@
 package pubsub
 
 import (
-	"time"
+//"time"
 )
 
 func (this *Supervisor) schedule() {
@@ -9,8 +9,6 @@ func (this *Supervisor) schedule() {
 		select {
 		case <-this.quit:
 			return
-
-		case <-this.decisionCh:
 
 		case <-this.notificationCh:
 		}

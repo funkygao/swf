@@ -3,13 +3,10 @@ package server
 import (
 	"io"
 	"net/http"
-	"strconv"
 
 	"github.com/funkygao/gafka/mpool"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/services/manager"
-	"github.com/funkygao/swf/services/supervisor"
 	"github.com/funkygao/swf/utils"
 	"github.com/julienschmidt/httprouter"
 )

@@ -15,20 +15,12 @@ func NewConfig() *config {
 	}
 }
 
-func (this *config) decisionQueue() string {
-	return "__decision"
-}
-
-func (this *config) supervisorQueue() string {
+func (this *config) Queue() string {
 	return "__supervisor"
 }
 
-func (this *config) decisionGroup() string {
+func (this *config) Group() string {
 	return "_sp_d_"
-}
-
-func (this *config) supervisorGroup() string {
-	return "sx"
 }
 
 func (this *config) version() string {

@@ -1,17 +1,12 @@
 package server
 
 import (
-	"io"
-	"net/http"
 	"strconv"
 
-	"github.com/funkygao/gafka/mpool"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/manager"
 	"github.com/funkygao/swf/services/supervisor"
-	"github.com/funkygao/swf/utils"
-	"github.com/julienschmidt/httprouter"
 )
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
@@ -44,11 +39,7 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 
 func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
 	output *models.StartWorkflowExecutionOutput, err error) {
-	// fire WorkflowExecutionStarted Event
-	// fire DecisionTaskScheduled Event
-	// and schedules the 1st decision task
-	// generate runId
-	supervisor.Default.NotifySupervisor(input)
+	supervisor.Default.Fire(input)
 
 	var runId int64
 	runId, err = this.ctx.idgen.Next()
@@ -69,7 +60,7 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 	output *models.PollForDecisionTaskOutput, err error) {
 	// fire ScheduleActivityTask decision
 	this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-
+		return nil
 	})
 
 	output = &models.PollForDecisionTaskOutput{}
@@ -82,7 +73,7 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInput) (
 	output *models.PollForActivityTaskOutput, err error) {
 	this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-
+		return nil
 	})
 
 	output = &models.PollForActivityTaskOutput{}
@@ -94,9 +85,7 @@ func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInpu
 
 func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivityTaskCompletedInput) (
 	output *models.RespondActivityTaskCompletedOutput, err error) {
-	// fire ActivityTaskCompleted Event
-	// fire DecisionTaskScheduled Event
-	supervisor.Default.NotifySupervisor(input)
+	supervisor.Default.Fire(input)
 
 	output = &models.RespondActivityTaskCompletedOutput{}
 
@@ -107,9 +96,7 @@ func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivit
 
 func (this *apiServer) respondDecisionTaskCompleted(input *models.RespondDecisionTaskCompletedInput) (
 	output *models.RespondDecisionTaskCompletedOutput, err error) {
-	// ScheduleActivityTask Decision
-	// fire ActivityTaskScheduled Event
-	supervisor.Default.NotifySupervisor(input)
+	supervisor.Default.Fire(input)
 
 	output = &models.RespondDecisionTaskCompletedOutput{}
 
