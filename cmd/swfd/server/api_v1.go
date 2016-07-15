@@ -119,6 +119,13 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 
 	case models.OpTerminateWorkflowExecution:
 
+	case models.OpRespondActivityTaskFailed:
+
+	case models.OpRespondActivityTaskCanceled:
+
+	case models.OpDeprecateWorkflowType:
+	case models.OpDeprecateActivityType:
+
 	default:
 		this.notFoundHandler(w, r)
 		return

@@ -11,12 +11,6 @@ import (
 
 func (this *Supervisor) Fire(input interface{}) {
 	switch m := input.(type) {
-	case *models.RegisterWorkflowTypeInput:
-		log.Debug("-> %#v", m)
-
-	case *models.RegisterActivityTypeInput:
-		log.Debug("-> %#v", m)
-
 	case *models.StartWorkflowExecutionInput:
 		// fire WorkflowExecutionStarted Event
 		// fire DecisionTaskScheduled Event
@@ -30,7 +24,7 @@ func (this *Supervisor) Fire(input interface{}) {
 		log.Debug("-> %#v", m)
 
 	case *models.RespondDecisionTaskCompletedInput:
-		// ScheduleActivityTask Decision
+		// got ScheduleActivityTask Decision
 		// fire ActivityTaskScheduled Event
 		log.Debug("-> %#v", m)
 

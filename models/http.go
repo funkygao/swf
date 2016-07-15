@@ -80,6 +80,17 @@ func (this *StartWorkflowExecutionOutput) Bytes() []byte {
 	return b
 }
 
+type TerminateWorkflowExecutionInput struct {
+	RunId      string
+	WorkflowId string
+	Reason     string
+	Details    string
+}
+
+type TerminateWorkflowExecutionOutput struct {
+	// empty
+}
+
 type PollForActivityTaskInput struct {
 	Identity string
 	Queue    string

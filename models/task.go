@@ -10,4 +10,5 @@ type ActivityTask struct {
 }
 
 type DecisionTask struct {
+	TaskToken string
 }

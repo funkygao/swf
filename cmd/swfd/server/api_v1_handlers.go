@@ -5,6 +5,7 @@ import (
 
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/services/history"
 	"github.com/funkygao/swf/services/manager"
 	"github.com/funkygao/swf/services/supervisor"
 )
@@ -50,6 +51,8 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 	output = &models.StartWorkflowExecutionOutput{
 		RunId: strconv.FormatInt(runId, 10),
 	}
+
+	history.Default.SaveWorkflowExecution(input, output)
 
 	log.Debug("startWorkflowExecution %#v -> %#v", input, output)
 
