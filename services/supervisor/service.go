@@ -10,5 +10,3 @@ type Service interface {
 	Fire(interface{})
 	AddTopic(cluster, topic, ver string) error
 }
-
-var Default Service

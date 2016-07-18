@@ -1,4 +1,4 @@
-package pubsub
+package supervisor
 
 import (
 	log "github.com/funkygao/log4go"

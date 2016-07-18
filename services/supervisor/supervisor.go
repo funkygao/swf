@@ -1,11 +1,10 @@
-package pubsub
+package supervisor
 
 import (
 	"runtime"
 
 	"github.com/funkygao/golib/idgen"
 	"github.com/funkygao/swf/services/mom"
-	"github.com/funkygao/swf/services/supervisor"
 )
 
 type Supervisor struct {
@@ -17,7 +16,7 @@ type Supervisor struct {
 	quit chan struct{}
 }
 
-func New(m mom.Service) supervisor.Service {
+func New(m mom.Service) Service {
 	return &Supervisor{
 		quit:           make(chan struct{}),
 		notificationCh: make(chan []byte, 1000),

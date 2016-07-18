@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	psub "github.com/funkygao/gafka/cmd/kateway/api/v1"
 	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gafka/telementry"
 	"github.com/funkygao/gafka/telementry/influxdb"
@@ -19,7 +18,6 @@ import (
 	mm "github.com/funkygao/swf/services/manager/memory"
 	"github.com/funkygao/swf/services/mom/pubsub"
 	"github.com/funkygao/swf/services/supervisor"
-	ps "github.com/funkygao/swf/services/supervisor/pubsub"
 )
 
 // Server is the SimpleWorkFlow server engine.
@@ -27,10 +25,9 @@ type Server struct {
 	apiServer *apiServer
 	services  []services.Service
 
-	zkzone *zk.ZkZone
-	idgen  *idgen.IdGenerator
-
-	pubsub *psub.Client
+	zkzone     *zk.ZkZone
+	idgen      *idgen.IdGenerator
+	supervisor supervisor.Service
 
 	shutdownChan chan struct{}
 }
@@ -75,8 +72,8 @@ func (this *Server) setupServices() {
 	history.Default = hm.New()
 	this.addService(history.Default)
 
-	supervisor.Default = ps.New(pubsub.New(pubsub.NewConfig()))
-	this.addService(supervisor.Default)
+	this.supervisor = supervisor.New(pubsub.New(pubsub.NewConfig()))
+	this.addService(this.supervisor)
 
 	cf, err := influxdb.NewConfig(Options.InfluxServer, Options.InfluxDbName, "", "", Options.ReporterInterval)
 	if err != nil {

@@ -7,13 +7,12 @@ import (
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/history"
 	"github.com/funkygao/swf/services/manager"
-	"github.com/funkygao/swf/services/supervisor"
 )
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
 	output *models.RegisterWorkflowTypeOutput, err error) {
 	manager.Default.RegisterWorkflowType(&input.WorkflowType)
-	if err = supervisor.Default.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	if err = this.ctx.supervisor.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -27,7 +26,7 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
 	output *models.RegisterActivityTypeOutput, err error) {
 	manager.Default.RegisterActivityType(&input.ActivityType)
-	if err = supervisor.Default.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	if err = this.ctx.supervisor.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -40,7 +39,7 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 
 func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
 	output *models.StartWorkflowExecutionOutput, err error) {
-	supervisor.Default.Fire(input)
+	this.ctx.supervisor.Fire(input)
 
 	var runId int64
 	runId, err = this.ctx.idgen.Next()
@@ -88,7 +87,7 @@ func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInpu
 
 func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivityTaskCompletedInput) (
 	output *models.RespondActivityTaskCompletedOutput, err error) {
-	supervisor.Default.Fire(input)
+	this.ctx.supervisor.Fire(input)
 
 	output = &models.RespondActivityTaskCompletedOutput{}
 
@@ -99,7 +98,7 @@ func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivit
 
 func (this *apiServer) respondDecisionTaskCompleted(input *models.RespondDecisionTaskCompletedInput) (
 	output *models.RespondDecisionTaskCompletedOutput, err error) {
-	supervisor.Default.Fire(input)
+	this.ctx.supervisor.Fire(input)
 
 	output = &models.RespondDecisionTaskCompletedOutput{}
 
