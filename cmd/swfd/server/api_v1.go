@@ -38,10 +38,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.registerWorkflowType(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpRegisterActivityType:
 		input := &models.RegisterActivityTypeInput{}
@@ -50,10 +46,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.registerActivityType(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpStartWorkflowExecution:
 		input := &models.StartWorkflowExecutionInput{}
@@ -62,10 +54,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.startWorkflowExecution(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpPollForActivityTask:
 		input := &models.PollForActivityTaskInput{}
@@ -74,10 +62,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.pollForActivityTask(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpPollForDecisionTask:
 		input := &models.PollForDecisionTaskInput{}
@@ -86,10 +70,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.pollForDecisionTask(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpRespondActivityTaskCompleted:
 		input := &models.RespondActivityTaskCompletedInput{}
@@ -98,10 +78,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.respondActivityTaskCompleted(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpRespondDecisionTaskCompleted:
 		input := &models.RespondDecisionTaskCompletedInput{}
@@ -110,10 +86,6 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		}
 
 		resp, err = this.respondDecisionTaskCompleted(input)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
 	case models.OpRecordActivityTaskHeartbeat:
 
@@ -128,6 +100,13 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 
 	default:
 		this.notFoundHandler(w, r)
+		return
+	}
+
+	if err != nil {
+		log.Error("%s: %v", api, err)
+
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

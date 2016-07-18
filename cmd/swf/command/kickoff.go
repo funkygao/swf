@@ -26,6 +26,7 @@ func (this *Kickoff) Run(args []string) (exitCode int) {
 	cmdFlags := flag.NewFlagSet("kickoff", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
 	cmdFlags.StringVar(&this.zone, "z", ctx.DefaultZone(), "")
+	cmdFlags.StringVar(&this.cluster, "c", "", "")
 	cmdFlags.StringVar(&this.workflowId, "workflow-id", "", "")
 	cmdFlags.StringVar(&this.input, "input", "", "")
 	cmdFlags.StringVar(&workflowType, "workflow-type", "", "")
@@ -56,7 +57,7 @@ func (this *Kickoff) startExecution() {
 		return
 	}
 
-	this.Ui.Info(fmt.Sprintf("submited with run id: %s", output.RunId))
+	this.Ui.Info(fmt.Sprintf("submited with run id: %d", output.RunId))
 }
 
 func (*Kickoff) Synopsis() string {

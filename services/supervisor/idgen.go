@@ -6,7 +6,7 @@ import (
 	"github.com/funkygao/golib/idgen"
 )
 
-func (this *Supervisor) nextEventId() int64 {
+func (this *Supervisor) nextId() int64 {
 	for {
 		eventId, err := this.idgen.Next()
 		if err != nil {

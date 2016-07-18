@@ -2,10 +2,7 @@ package server
 
 import (
 	"flag"
-	"fmt"
 	"time"
-
-	"github.com/funkygao/gafka/ctx"
 )
 
 var (
@@ -45,14 +42,9 @@ var (
 )
 
 func ParseFlags() {
-	ip, err := ctx.LocalIP()
-	if err != nil {
-		panic(err)
-	}
-
 	flag.StringVar(&Options.Id, "id", "", "kateway id, the id must be unique within a host")
 	flag.StringVar(&Options.Zone, "zone", "", "kafka zone name")
-	flag.StringVar(&Options.ApiHttpAddr, "http", fmt.Sprintf("%s:9195", ip.String()), "http bind addr")
+	flag.StringVar(&Options.ApiHttpAddr, "http", ":9195", "http bind addr")
 	flag.StringVar(&Options.ApiHttpsAddr, "https", "", "https bind addr")
 	flag.StringVar(&Options.LogLevel, "level", "trace", "log level")
 	flag.StringVar(&Options.LogFile, "log", "stdout", "log file, default stdout")
@@ -62,7 +54,7 @@ func ParseFlags() {
 	flag.StringVar(&Options.KeyFile, "keyfile", "", "key file path")
 	flag.StringVar(&Options.Store, "store", "kafka", "backend store")
 	flag.StringVar(&Options.ManagerStore, "mstore", "mysql", "store integration with manager")
-	flag.StringVar(&Options.InfluxServer, "influxdbaddr", "http://10.77.144.193:10036", "influxdb server address for the metrics reporter")
+	flag.StringVar(&Options.InfluxServer, "influxdbaddr", "", "influxdb server address for the metrics reporter")
 	flag.StringVar(&Options.InfluxDbName, "influxdbname", "pubsub", "influxdb db name")
 	flag.BoolVar(&Options.ShowVersion, "version", false, "show version and exit")
 	flag.BoolVar(&Options.Debug, "debug", false, "enable debug mode")

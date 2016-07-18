@@ -30,6 +30,30 @@ type HistoryEvent struct {
 	WorkflowExecutionTerminatedEventAttributes      *WorkflowExecutionTerminatedEventAttributes
 }
 
+type HistoryEvents []HistoryEvent
+
+func (this *HistoryEvents) AppendEvent(evt HistoryEvent) *HistoryEvents {
+	*this = append(*this, evt)
+	return this
+}
+
+func (this *HistoryEvents) Bytes() []byte {
+	b, _ := json.Marshal(this)
+	return b
+}
+
+func (this *HistoryEvents) From(b []byte) {
+	json.Unmarshal(b, this)
+}
+
+func NewEvent(id int64, t time.Time, typ string) *HistoryEvent {
+	return &HistoryEvent{
+		EventId:   id,
+		EventTime: t,
+		EventType: typ,
+	}
+}
+
 func (this *HistoryEvent) Bytes() []byte {
 	b, _ := json.Marshal(this)
 	return b

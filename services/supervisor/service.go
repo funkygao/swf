@@ -7,6 +7,6 @@ import (
 type Service interface {
 	services.Service
 
-	Fire(interface{})
+	Fire(input interface{}) (output interface{}, err error)
 	AddTopic(cluster, topic, ver string) error
 }

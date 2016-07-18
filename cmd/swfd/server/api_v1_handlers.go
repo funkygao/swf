@@ -1,8 +1,6 @@
 package server
 
 import (
-	"strconv"
-
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/history"
@@ -39,17 +37,12 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 
 func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
 	output *models.StartWorkflowExecutionOutput, err error) {
-	this.ctx.supervisor.Fire(input)
-
-	var runId int64
-	runId, err = this.ctx.idgen.Next()
-	if err != nil {
-		return
+	o, e := this.ctx.supervisor.Fire(input)
+	if e != nil {
+		return nil, e
 	}
 
-	output = &models.StartWorkflowExecutionOutput{
-		RunId: strconv.FormatInt(runId, 10),
-	}
+	output = o.(*models.StartWorkflowExecutionOutput)
 
 	history.Default.SaveWorkflowExecution(input, output)
 

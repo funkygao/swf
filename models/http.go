@@ -68,7 +68,7 @@ func (this *StartWorkflowExecutionInput) From(payload []byte) error {
 }
 
 type StartWorkflowExecutionOutput struct {
-	RunId string `json:"run_id"`
+	RunId int64 `json:"run_id"`
 }
 
 func (this *StartWorkflowExecutionOutput) From(payload []byte) error {

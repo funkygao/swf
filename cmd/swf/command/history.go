@@ -3,6 +3,7 @@ package command
 import (
 	"flag"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/funkygao/gocli"
@@ -28,8 +29,12 @@ func (this *History) Run(args []string) (exitCode int) {
 
 	parts := strings.SplitN(exec, ",", 2)
 	this.exec.WorkflowId = parts[0]
+	runId, err := strconv.ParseInt(parts[1], 10, 64)
+	if err != nil {
+
+	}
 	if len(parts) > 1 {
-		this.exec.RunId = parts[1]
+		this.exec.RunId = runId
 	}
 
 	this.listHistory()

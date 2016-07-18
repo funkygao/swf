@@ -16,11 +16,12 @@ type Supervisor struct {
 	quit chan struct{}
 }
 
-func New(m mom.Service) Service {
+func New(m mom.Service, idgen *idgen.IdGenerator) Service {
 	return &Supervisor{
 		quit:           make(chan struct{}),
 		notificationCh: make(chan []byte, 1000),
 		m:              m,
+		idgen:          idgen,
 	}
 }
 

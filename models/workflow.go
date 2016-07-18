@@ -23,5 +23,5 @@ func (this WorkflowType) Validate() error {
 // the workflow, or by SWF.
 type WorkflowExecution struct {
 	WorkflowId string // 1-256 in len
-	RunId      string // 1-64 in len
+	RunId      int64  // 1-64 in len
 }

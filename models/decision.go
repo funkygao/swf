@@ -1,8 +1,18 @@
 package models
 
+import (
+	"encoding/json"
+)
+
 type decisionType int
 
 type Decision struct {
+	DecisionType string
+}
+
+func (this *Decision) Bytes() []byte {
+	b, _ := json.Marshal(this)
+	return b
 }
 
 const (

@@ -72,15 +72,17 @@ func (this *Server) setupServices() {
 	history.Default = hm.New()
 	this.addService(history.Default)
 
-	this.supervisor = supervisor.New(pubsub.New(pubsub.NewConfig()))
+	this.supervisor = supervisor.New(pubsub.New(pubsub.NewConfig()), this.idgen)
 	this.addService(this.supervisor)
 
 	cf, err := influxdb.NewConfig(Options.InfluxServer, Options.InfluxDbName, "", "", Options.ReporterInterval)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		telementry.Default = influxdb.New(metrics.DefaultRegistry, cf)
+		this.addService(telementry.Default)
+	} else {
+		log.Error("%v", err)
 	}
-	telementry.Default = influxdb.New(metrics.DefaultRegistry, cf)
-	this.addService(telementry.Default)
+
 }
 
 func (this *Server) addService(svc services.Service) {
