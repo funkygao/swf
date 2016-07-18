@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 	"time"
+
+	"github.com/funkygao/swf/services/supervisor"
 )
 
 type apiServer struct {
@@ -19,4 +21,8 @@ func newApiServer(ctx *Server) *apiServer {
 
 func (this *apiServer) punishClient(r *http.Request) {
 	time.Sleep(time.Second * 2)
+}
+
+func (this *apiServer) supervisor() supervisor.Service {
+	return this.ctx.supervisor
 }

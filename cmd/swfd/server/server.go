@@ -15,7 +15,7 @@ import (
 	"github.com/funkygao/swf/services/history"
 	hm "github.com/funkygao/swf/services/history/memory"
 	"github.com/funkygao/swf/services/manager"
-	mm "github.com/funkygao/swf/services/manager/memory"
+	mm "github.com/funkygao/swf/services/manager/mysql"
 	"github.com/funkygao/swf/services/mom/pubsub"
 	"github.com/funkygao/swf/services/supervisor"
 )
@@ -66,7 +66,7 @@ func (this *Server) setupApis() {
 }
 
 func (this *Server) setupServices() {
-	manager.Default = mm.New()
+	manager.Default = mm.New("root:@/swf") // TODO
 	this.addService(manager.Default)
 
 	history.Default = hm.New()

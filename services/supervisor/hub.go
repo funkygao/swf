@@ -26,18 +26,18 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		evts := &x
 		evts.AppendEvent(*evt)
 
-		evt = models.NewEvent(evt.EventId+1, time.Now(), models.EventTypeDecisionTaskScheduled)
+		evt = models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
 		evts.AppendEvent(*evt)
 
 		var msg models.PollForDecisionTaskOutput
 		msg.Events = *evts
+		msg.TaskToken = this.nextTaskToken()
 		msg.WorkflowType = m.WorkflowType
 		msg.WorkflowExecution.RunId = runId
 		msg.WorkflowExecution.WorkflowId = m.WorkflowId
 
-		// dispatch events to decider queue
-		this.m.Pub("appid", m.WorkflowType.Topic(), m.WorkflowType.Version, msg.Bytes())
+		this.dispatchDecider(m.WorkflowType, msg.Bytes())
 
 		history.Default.SaveWorkflowExecution(m, out)
 
@@ -48,11 +48,31 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 	case *models.RespondActivityTaskCompletedInput:
 		// fire ActivityTaskCompleted Event
 		// fire DecisionTaskScheduled Event
+
+		out := &models.RespondActivityTaskCompletedOutput{}
+
+		id := int64(1)
+
+		evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskCompleted)
+		evt.ActivityTaskCompletedEventAttributes = &models.ActivityTaskCompletedEventAttributes{}
+		evt.ActivityTaskCompletedEventAttributes.Result = m.Result
+
+		evt = models.NewEvent(id, time.Now(), models.EventTypeDecisionTaskScheduled)
+		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
+
+		output = out
+
 		log.Debug("-> %#v", m)
 
 	case *models.RespondDecisionTaskCompletedInput:
 		// got ScheduleActivityTask Decision
 		// fire ActivityTaskScheduled Event
+		id := int64(1)
+
+		evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskScheduled)
+		evt.ActivityTaskScheduledEventAttributes = &models.ActivityTaskScheduledEventAttributes{}
+		evt.ActivityTaskScheduledEventAttributes.Input = ""
+
 		log.Debug("-> %#v", m)
 
 	default:
@@ -68,15 +88,12 @@ func (this *Supervisor) AddTopic(cluster, topic, ver string) error {
 	return this.m.AddTopic(cluster, "appid", topic, ver)
 }
 
-func (this *Supervisor) notify(topic, ver string, msg []byte) {
-	this.m.Pub("appid", topic, ver, msg)
+func (this *Supervisor) dispatchWorker(w models.ActivityType, msg []byte) {
+	this.m.Pub("appid", w.Topic(), w.Version, msg)
 }
 
-func (this *Supervisor) notifyWorker(topic, ver string, msg []byte) {
-
-}
-
-func (this *Supervisor) notifyDecider(w models.WorkflowType) {
+func (this *Supervisor) dispatchDecider(w models.WorkflowType, msg []byte) {
+	this.m.Pub("appid", w.Topic(), w.Version, msg)
 
 }
 

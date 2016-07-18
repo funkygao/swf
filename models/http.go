@@ -14,7 +14,6 @@ type HttpApiRequest interface {
 
 type RegisterActivityTypeInput struct {
 	ActivityType
-	Description string
 }
 
 func (this *RegisterActivityTypeInput) From(payload []byte) error {
@@ -36,7 +35,6 @@ func (this *RegisterActivityTypeOutput) From(payload []byte) error {
 
 type RegisterWorkflowTypeInput struct {
 	WorkflowType
-	Description string
 }
 
 func (this *RegisterWorkflowTypeInput) From(payload []byte) error {

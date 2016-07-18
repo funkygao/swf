@@ -1,9 +1,28 @@
 package models
 
+import (
+	"time"
+)
+
+const (
+	// @enum ChildPolicy
+	ChildPolicyTerminate = "TERMINATE"
+	// @enum ChildPolicy
+	ChildPolicyRequestCancel = "REQUEST_CANCEL"
+	// @enum ChildPolicy
+	ChildPolicyAbandon = "ABANDON"
+)
+
 type WorkflowType struct {
-	Name    string // 1-256 in len
-	Version string // 1-64 in len
-	Cluster string
+	Name               string `db:"name"`
+	Version            string `db:"ver"`
+	Domain             string `db:"domain"`
+	Description        string `db:"desc"`
+	Cluster            string `db:"cluster"`
+	DefaultChildPolicy string `db:"child_policy"`
+
+	DefaultExecutionStartToCloseTimeout time.Duration `db:"-"`
+	DefaultTaskStartToCloseTimeout      time.Duration `db:"-"`
 }
 
 func (this WorkflowType) Topic() string {

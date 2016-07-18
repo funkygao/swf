@@ -8,11 +8,6 @@ import (
 type Service interface {
 	services.Service
 
-	RegisterWorkflowType()
-	RegisterActivityType()
-	LoadWorkflowTypes()
-	LoadActivityTypes()
-
 	SaveWorkflowExecution(*models.StartWorkflowExecutionInput, *models.StartWorkflowExecutionOutput) error
 	LoadWorkflowExecution(runId int64)
 }

@@ -9,7 +9,11 @@ import (
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
 	output *models.RegisterWorkflowTypeOutput, err error) {
-	manager.Default.RegisterWorkflowType(&input.WorkflowType)
+	err = manager.Default.RegisterWorkflowType(&input.WorkflowType)
+	if err != nil {
+		return
+	}
+
 	if err = this.ctx.supervisor.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
 		return
 	}
@@ -23,8 +27,12 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 
 func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeInput) (
 	output *models.RegisterActivityTypeOutput, err error) {
-	manager.Default.RegisterActivityType(&input.ActivityType)
-	if err = this.ctx.supervisor.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	err = manager.Default.RegisterActivityType(&input.ActivityType)
+	if err != nil {
+		return
+	}
+
+	if err = this.supervisor().AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -37,7 +45,7 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 
 func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecutionInput) (
 	output *models.StartWorkflowExecutionOutput, err error) {
-	o, e := this.ctx.supervisor.Fire(input)
+	o, e := this.supervisor().Fire(input)
 	if e != nil {
 		return nil, e
 	}
@@ -80,7 +88,7 @@ func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInpu
 
 func (this *apiServer) respondActivityTaskCompleted(input *models.RespondActivityTaskCompletedInput) (
 	output *models.RespondActivityTaskCompletedOutput, err error) {
-	this.ctx.supervisor.Fire(input)
+	this.supervisor().Fire(input)
 
 	output = &models.RespondActivityTaskCompletedOutput{}
 

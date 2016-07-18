@@ -11,19 +11,3 @@ func (this *History) SaveWorkflowExecution(*models.StartWorkflowExecutionInput, 
 func (this *History) LoadWorkflowExecution(runId int64) {
 
 }
-
-func (this *History) RegisterWorkflowType() {
-
-}
-
-func (this *History) RegisterActivityType() {
-
-}
-
-func (this *History) LoadWorkflowTypes() {
-
-}
-
-func (this *History) LoadActivityTypes() {
-
-}
