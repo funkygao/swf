@@ -21,13 +21,14 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		evt.WorkflowExecutionStartedEventAttributes.Input = m.Input
 		evt.WorkflowExecutionStartedEventAttributes.WorkflowType = m.WorkflowType
 
-		var x models.HistoryEvents
-		evts := &x
+		evts := models.NewHistoryEvents()
 		evts.AppendEvent(*evt)
 
 		evt = models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
 		evts.AppendEvent(*evt)
+
+		// save the history
 
 		var msg models.PollForDecisionTaskOutput
 		msg.Events = *evts
@@ -50,26 +51,39 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		// got ScheduleActivityTask Decision
 		// fire ActivityTaskScheduled Event
 
-		for _, dicision := range m.Decisions {
+		for _, decision := range m.Decisions {
 			log.Debug("%#v", decision)
 
-			switch dicision.DecisionType {
+			switch decision.DecisionType {
 			case models.DecisionTypeScheduleActivityTask:
+				// how to use m.TaskToken
+				// how to make up the history
+				// what about ActivityId
 				task := this.tasks[m.TaskToken]
 
 				var msg models.PollForActivityTaskOutput
 				msg.TaskToken = m.TaskToken
-				msg.Input = d.Input
+				msg.Input = decision.ScheduleActivityTaskDecisionAttributes.Input
 
+				// fetch history by taskToken
+				//taskToken -> task.d.WorkflowExecution.RunId -> history
+
+				var evts models.HistoryEvents
 				evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskScheduled)
 				evt.ActivityTaskScheduledEventAttributes = &models.ActivityTaskScheduledEventAttributes{}
-				evt.ActivityTaskScheduledEventAttributes.Input = task.d.Events[0].WorkflowExecutionStartedEventAttributes.Input
+				evt.ActivityTaskScheduledEventAttributes.Input = decision.ScheduleActivityTaskDecisionAttributes.Input
+				evts.AppendEvent(evt)
 
-				this.dispatchWorker(dicision.ScheduleActivityTaskDecisionAttributes.ActivityType, msg.Bytes())
+				// save the history?
+
+				this.dispatchWorker(decision.ScheduleActivityTaskDecisionAttributes.ActivityType, msg.Bytes())
 
 			case models.DecisionTypeCompleteWorkflowExecution:
 				log.Debug("task[%s] closed", m.TaskToken)
 				delete(this.tasks, m.TaskToken)
+
+			default:
+				log.Warn("not implemented %T", decision)
 			}
 		}
 
@@ -81,12 +95,18 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 
 		out := &models.RespondActivityTaskCompletedOutput{}
 
+		// fetch history by task token
+
+		var evts models.HistoryEvents
+
 		evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskCompleted)
 		evt.ActivityTaskCompletedEventAttributes = &models.ActivityTaskCompletedEventAttributes{}
 		evt.ActivityTaskCompletedEventAttributes.Result = m.Result
+		evts.AppendEvent(evt)
 
 		evt = models.NewEvent(id, time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
+		evts.AppendEvent(evt)
 
 		var msg models.PollForDecisionTaskOutput
 		msg.Events = *evts

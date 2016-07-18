@@ -32,6 +32,11 @@ type HistoryEvent struct {
 
 type HistoryEvents []HistoryEvent
 
+func NewHistoryEvents() *HistoryEvents {
+	var evts HistoryEvents
+	return &evts
+}
+
 func (this *HistoryEvents) AppendEvent(evt ...HistoryEvent) *HistoryEvents {
 	for _, e := range evt {
 		*this = append(*this, e)
