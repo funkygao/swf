@@ -36,9 +36,36 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		msg.WorkflowExecution.RunId = runId
 		msg.WorkflowExecution.WorkflowId = m.WorkflowId
 
+		this.tasks[msg.TaskToken] = task{
+			d: &msg,
+		}
+
 		this.dispatchDecider(m.WorkflowType, msg.Bytes())
 
 		output = out
+
+		log.Debug("-> %#v", m)
+
+	case *models.RespondDecisionTaskCompletedInput:
+		// got ScheduleActivityTask Decision
+		// fire ActivityTaskScheduled Event
+
+		for _, dicision := range m.Decisions {
+			switch dicision.DecisionType {
+			case models.DecisionTypeScheduleActivityTask:
+				task := this.tasks[m.TaskToken]
+
+				evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskScheduled)
+				evt.ActivityTaskScheduledEventAttributes = &models.ActivityTaskScheduledEventAttributes{}
+				evt.ActivityTaskScheduledEventAttributes.Input = task.d.Events[0].WorkflowExecutionStartedEventAttributes.Input
+
+				this.dispatchWorker(w, msg)
+
+			case models.DecisionTypeCompleteWorkflowExecution:
+				log.Debug("task[%s] closed", m.TaskToken)
+				delete(this.tasks, m.TaskToken)
+			}
+		}
 
 		log.Debug("-> %#v", m)
 
@@ -57,18 +84,13 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		evt = models.NewEvent(id, time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
 
+		var msg models.PollForDecisionTaskOutput
+		msg.Events = *evts
+		msg.TaskToken = this.nextTaskToken()
+
+		this.dispatchDecider(w, msg)
+
 		output = out
-
-		log.Debug("-> %#v", m)
-
-	case *models.RespondDecisionTaskCompletedInput:
-		// got ScheduleActivityTask Decision
-		// fire ActivityTaskScheduled Event
-		id := int64(1)
-
-		evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskScheduled)
-		evt.ActivityTaskScheduledEventAttributes = &models.ActivityTaskScheduledEventAttributes{}
-		evt.ActivityTaskScheduledEventAttributes.Input = ""
 
 		log.Debug("-> %#v", m)
 

@@ -21,6 +21,10 @@ func (this *Manager) GetWorkflowType(t *models.WorkflowType) (r *models.Workflow
 	return
 }
 
+func (this *Manager) GetTypeByTaskToken(token string) (*models.WorkflowType, *models.ActivityType) {
+	return nil, nil
+}
+
 func (this *Manager) SaveWorkflowExecution(in *models.StartWorkflowExecutionInput, out *models.StartWorkflowExecutionOutput) error {
 	w := &models.WorkflowExecution{}
 	w.WorkflowType = in.WorkflowType

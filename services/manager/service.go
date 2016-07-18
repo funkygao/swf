@@ -14,6 +14,8 @@ type Service interface {
 	SaveWorkflowExecution(*models.StartWorkflowExecutionInput, *models.StartWorkflowExecutionOutput) error
 	LoadWorkflowExecution(runId int64) (r *models.WorkflowExecution, err error)
 
+	GetTypeByTaskToken(token string) (*models.WorkflowType, *models.ActivityType)
+
 	GetActivityType(t *models.ActivityType) (r *models.ActivityType, err error)
 	GetWorkflowType(t *models.WorkflowType) (r *models.WorkflowType, err error)
 }

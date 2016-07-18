@@ -69,6 +69,7 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 	//})
 
 	output = &models.PollForDecisionTaskOutput{}
+	output.TaskToken = ""
 
 	log.Debug("pollForDecisionTask %#v -> %#v", input, output)
 
@@ -82,6 +83,10 @@ func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInpu
 	//})
 
 	output = &models.PollForActivityTaskOutput{}
+	output.Input = ""
+	output.TaskToken = ""
+	output.ActivityId = ""
+	output.WorkflowExecution = models.WorkflowExecution{}
 
 	log.Debug("pollForActivityTask %#v -> %#v", input, output)
 

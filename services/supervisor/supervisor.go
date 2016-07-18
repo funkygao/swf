@@ -4,14 +4,20 @@ import (
 	"runtime"
 
 	"github.com/funkygao/golib/idgen"
+	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/mom"
 )
+
+type task struct {
+	d *models.PollForDecisionTaskOutput
+}
 
 type Supervisor struct {
 	m     mom.Service
 	idgen *idgen.IdGenerator
 
 	notificationCh chan []byte
+	tasks          map[string]task
 
 	quit chan struct{}
 }
@@ -22,6 +28,7 @@ func New(m mom.Service, idgen *idgen.IdGenerator) Service {
 		notificationCh: make(chan []byte, 1000),
 		m:              m,
 		idgen:          idgen,
+		tasks:          make(map[string]task, 1000),
 	}
 }
 
