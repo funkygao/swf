@@ -11,6 +11,9 @@ type Service interface {
 	RegisterActivityType(t *models.ActivityType) (err error)
 	RegisterWorkflowType(t *models.WorkflowType) (err error)
 
+	SaveWorkflowExecution(*models.StartWorkflowExecutionInput, *models.StartWorkflowExecutionOutput) error
+	LoadWorkflowExecution(runId int64) (r *models.WorkflowExecution, err error)
+
 	GetActivityType(t *models.ActivityType) (r *models.ActivityType, err error)
 	GetWorkflowType(t *models.WorkflowType) (r *models.WorkflowType, err error)
 }

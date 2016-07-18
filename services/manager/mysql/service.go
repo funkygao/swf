@@ -22,7 +22,6 @@ func (this *Manager) Name() string {
 }
 
 func (this *Manager) Start() (err error) {
-	println(this.dsn)
 	this.db, err = dbx.Open("mysql", this.dsn)
 	if err != nil {
 		return

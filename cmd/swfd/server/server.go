@@ -13,7 +13,7 @@ import (
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/services"
 	"github.com/funkygao/swf/services/history"
-	hm "github.com/funkygao/swf/services/history/memory"
+	hm "github.com/funkygao/swf/services/history/mysql"
 	"github.com/funkygao/swf/services/manager"
 	mm "github.com/funkygao/swf/services/manager/mysql"
 	"github.com/funkygao/swf/services/mom/pubsub"
@@ -69,7 +69,7 @@ func (this *Server) setupServices() {
 	manager.Default = mm.New("root:@/swf") // TODO
 	this.addService(manager.Default)
 
-	history.Default = hm.New()
+	history.Default = hm.New("root:@/swf")
 	this.addService(history.Default)
 
 	this.supervisor = supervisor.New(pubsub.New(pubsub.NewConfig()), this.idgen)

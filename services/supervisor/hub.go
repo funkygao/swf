@@ -5,7 +5,6 @@ import (
 
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/services/history"
 )
 
 func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) {
@@ -38,8 +37,6 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		msg.WorkflowExecution.WorkflowId = m.WorkflowId
 
 		this.dispatchDecider(m.WorkflowType, msg.Bytes())
-
-		history.Default.SaveWorkflowExecution(m, out)
 
 		output = out
 

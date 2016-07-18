@@ -3,7 +3,6 @@ package server
 import (
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/services/history"
 	"github.com/funkygao/swf/services/manager"
 )
 
@@ -14,7 +13,7 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 		return
 	}
 
-	if err = this.ctx.supervisor.AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	if err = this.supervisor().AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -52,7 +51,10 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 
 	output = o.(*models.StartWorkflowExecutionOutput)
 
-	history.Default.SaveWorkflowExecution(input, output)
+	err = manager.Default.SaveWorkflowExecution(input, output)
+	if err != nil {
+		log.Error(err)
+	}
 
 	log.Debug("startWorkflowExecution %#v -> %#v", input, output)
 
