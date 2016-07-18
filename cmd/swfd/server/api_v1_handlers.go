@@ -62,9 +62,9 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInput) (
 	output *models.PollForDecisionTaskOutput, err error) {
 	// fire ScheduleActivityTask decision
-	this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-		return nil
-	})
+	//this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
+	//return nil
+	//})
 
 	output = &models.PollForDecisionTaskOutput{}
 
@@ -75,9 +75,9 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 
 func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInput) (
 	output *models.PollForActivityTaskOutput, err error) {
-	this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-		return nil
-	})
+	//this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
+	//	return nil
+	//})
 
 	output = &models.PollForActivityTaskOutput{}
 

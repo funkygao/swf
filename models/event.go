@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -27,6 +28,15 @@ type HistoryEvent struct {
 	WorkflowExecutionCancelRequestedEventAttributes *WorkflowExecutionCancelRequestedEventAttributes
 	WorkflowExecutionTimedOutEventAttributes        *WorkflowExecutionTimedOutEventAttributes
 	WorkflowExecutionTerminatedEventAttributes      *WorkflowExecutionTerminatedEventAttributes
+}
+
+func (this *HistoryEvent) Bytes() []byte {
+	b, _ := json.Marshal(this)
+	return b
+}
+
+func (this *HistoryEvent) From(payload []byte) error {
+	return json.Unmarshal(payload, this)
 }
 
 const (

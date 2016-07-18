@@ -3,33 +3,26 @@ package pubsub
 import (
 	"runtime"
 
-	"github.com/funkygao/gafka/cmd/kateway/api/v1"
+	"github.com/funkygao/golib/idgen"
+	"github.com/funkygao/swf/services/mom"
 	"github.com/funkygao/swf/services/supervisor"
 )
 
 type Supervisor struct {
-	cf *config
-
-	client *api.Client
+	m     mom.Service
+	idgen *idgen.IdGenerator
 
 	notificationCh chan []byte
 
 	quit chan struct{}
 }
 
-func New(cf *config) supervisor.Service {
-	this := &Supervisor{
-		cf:             cf,
+func New(m mom.Service) supervisor.Service {
+	return &Supervisor{
 		quit:           make(chan struct{}),
 		notificationCh: make(chan []byte, 1000),
+		m:              m,
 	}
-
-	c := api.DefaultConfig(cf.Appid, cf.Secret)
-	c.Pub.Endpoint = cf.PubEndpoint
-	c.Sub.Endpoint = cf.SubEndpoint
-	c.Admin.Endpoint = cf.AdminEndpoint
-	this.client = api.NewClient(c)
-	return this
 }
 
 func (this *Supervisor) Name() string {

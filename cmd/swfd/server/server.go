@@ -17,6 +17,7 @@ import (
 	hm "github.com/funkygao/swf/services/history/memory"
 	"github.com/funkygao/swf/services/manager"
 	mm "github.com/funkygao/swf/services/manager/memory"
+	"github.com/funkygao/swf/services/mom/pubsub"
 	"github.com/funkygao/swf/services/supervisor"
 	ps "github.com/funkygao/swf/services/supervisor/pubsub"
 )
@@ -74,7 +75,7 @@ func (this *Server) setupServices() {
 	history.Default = hm.New()
 	this.addService(history.Default)
 
-	supervisor.Default = ps.New(ps.NewConfig())
+	supervisor.Default = ps.New(pubsub.New(pubsub.NewConfig()))
 	this.addService(supervisor.Default)
 
 	cf, err := influxdb.NewConfig(Options.InfluxServer, Options.InfluxDbName, "", "", Options.ReporterInterval)
