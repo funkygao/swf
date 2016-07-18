@@ -46,6 +46,18 @@ func (this *HistoryEvents) From(b []byte) {
 	json.Unmarshal(b, this)
 }
 
+func (this *HistoryEvents) NextEventId() int64 {
+	return this.Last().EventId + 1
+}
+
+func (this *HistoryEvents) First() HistoryEvent {
+	return (*this)[0]
+}
+
+func (this *HistoryEvents) Last() HistoryEvent {
+	return (*this)[len(*this)-1]
+}
+
 func NewEvent(id int64, t time.Time, typ string) *HistoryEvent {
 	return &HistoryEvent{
 		EventId:   id,
