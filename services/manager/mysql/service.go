@@ -18,7 +18,7 @@ func New(dsn string) manager.Service {
 }
 
 func (this *Manager) Name() string {
-	return "mysql"
+	return "manager.mysql"
 }
 
 func (this *Manager) Start() (err error) {

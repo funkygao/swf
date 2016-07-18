@@ -37,6 +37,10 @@ func (this *Supervisor) Name() string {
 }
 
 func (this *Supervisor) Start() error {
+	if err := this.m.Start(); err != nil {
+		return err
+	}
+
 	go this.recvNotification()
 
 	for i := 0; i < runtime.NumCPU(); i++ {

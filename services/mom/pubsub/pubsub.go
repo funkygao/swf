@@ -23,7 +23,7 @@ func New(cf *config) mom.Service {
 }
 
 func (this *PubSub) Name() string {
-	return "pubsub"
+	return "mom.pubsub"
 }
 
 func (this *PubSub) Start() error {

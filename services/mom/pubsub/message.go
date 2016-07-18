@@ -15,6 +15,6 @@ func (this *PubSub) AddTopic(cluster, appid, topic, ver string) error {
 	return this.client.AddTopic(cluster, appid, topic, ver)
 }
 
-func (this *PubSub) Sub(appid, topic, ver string) {
-
+func (this *PubSub) Sub(appid, topic, ver string) []byte {
+	return nil
 }

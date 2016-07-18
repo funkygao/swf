@@ -16,7 +16,7 @@ import (
 	hm "github.com/funkygao/swf/services/history/mysql"
 	"github.com/funkygao/swf/services/manager"
 	mm "github.com/funkygao/swf/services/manager/mysql"
-	"github.com/funkygao/swf/services/mom/pubsub"
+	"github.com/funkygao/swf/services/mom/channel"
 	"github.com/funkygao/swf/services/supervisor"
 )
 
@@ -72,7 +72,7 @@ func (this *Server) setupServices() {
 	history.Default = hm.New("root:@/swf")
 	this.addService(history.Default)
 
-	this.supervisor = supervisor.New(pubsub.New(pubsub.NewConfig()), this.idgen)
+	this.supervisor = supervisor.New(channel.New(), this.idgen)
 	this.addService(this.supervisor)
 
 	cf, err := influxdb.NewConfig(Options.InfluxServer, Options.InfluxDbName, "", "", Options.ReporterInterval)

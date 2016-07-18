@@ -65,7 +65,7 @@ func New() manager.Service {
 }
 
 func (this *Manager) Name() string {
-	return "manager"
+	return "manager.memory"
 }
 
 func (this *Manager) Start() (err error) {
