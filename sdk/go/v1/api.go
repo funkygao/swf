@@ -54,7 +54,7 @@ func (this *Client) StartWorkflowExecution(input *models.StartWorkflowExecutionI
 	return output, nil
 }
 
-func (this *Client) PollForActivityTask() {
+func (this *Client) PollForActivityTask() chan models.PollForActivityTaskOutput {
 
 }
 
