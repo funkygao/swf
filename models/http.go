@@ -123,8 +123,8 @@ func (this *PollForActivityTaskOutput) Bytes() []byte {
 	return b
 }
 
-func (this *PollForActivityTaskOutput) From(b []byte) error {
-	return json.Unmarshal(b, this)
+func (this *PollForActivityTaskOutput) From(payload []byte) error {
+	return json.Unmarshal(payload, this)
 }
 
 type PollForDecisionTaskInput struct {
@@ -149,8 +149,8 @@ func (this *PollForDecisionTaskOutput) Bytes() []byte {
 	return b
 }
 
-func (this *PollForDecisionTaskOutput) From(b []byte) error {
-	return json.Unmarshal(b, this)
+func (this *PollForDecisionTaskOutput) From(payload []byte) error {
+	return json.Unmarshal(payload, this)
 }
 
 type RespondDecisionTaskCompletedInput struct {
@@ -193,6 +193,6 @@ func (this *RespondActivityTaskCompletedOutput) Bytes() []byte {
 	return b
 }
 
-func (this *RespondActivityTaskCompletedOutput) From(b []byte) error {
-	return json.Unmarshal(b, this)
+func (this *RespondActivityTaskCompletedOutput) From(payload []byte) error {
+	return json.Unmarshal(payload, this)
 }
