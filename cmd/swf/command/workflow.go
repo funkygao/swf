@@ -61,7 +61,6 @@ func (this *Workflow) registerWorkflowType() {
 }
 
 func (this *Workflow) listWorkflowTypes() {
-	swfapi.Default().ListWorkflowTypes()
 }
 
 func (*Workflow) Synopsis() string {

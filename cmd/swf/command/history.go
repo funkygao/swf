@@ -8,7 +8,7 @@ import (
 
 	"github.com/funkygao/gocli"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/sdk/go/v1"
+	//"github.com/funkygao/swf/sdk/go/v1"
 )
 
 type History struct {
@@ -43,7 +43,6 @@ func (this *History) Run(args []string) (exitCode int) {
 }
 
 func (this *History) listHistory() {
-	swfapi.Default().GetWorkflowExecutionHistory()
 }
 
 func (*History) Synopsis() string {

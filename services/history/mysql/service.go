@@ -18,7 +18,7 @@ func New(dsn string) history.Service {
 }
 
 func (this *service) Name() string {
-	return "mysql"
+	return "history.mysql"
 }
 
 func (this *service) Start() (err error) {

@@ -46,7 +46,7 @@ func (this *Activity) Run(args []string) (exitCode int) {
 }
 
 func (this *Activity) listActivityTypes() {
-	swfapi.WithZone(this.zone).ListActivityTypes()
+
 }
 
 func (this *Activity) registerActivityType() {
