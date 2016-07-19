@@ -17,7 +17,7 @@ type Supervisor struct {
 	idgen *idgen.IdGenerator
 
 	notificationCh chan []byte
-	tasks          map[string]task
+	tasks          map[string]task // FIXME
 
 	quit chan struct{}
 }

@@ -68,6 +68,7 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 	//return nil
 	//})
 
+	// how to get the WorkflowType?
 	output = &models.PollForDecisionTaskOutput{}
 	output.TaskToken = ""
 
@@ -82,6 +83,7 @@ func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInpu
 	//	return nil
 	//})
 
+	// how to get the ActivityType?
 	output = &models.PollForActivityTaskOutput{}
 	output.Input = ""
 	output.TaskToken = ""

@@ -1,10 +1,12 @@
 package supervisor
 
 import (
+	"errors"
 	"time"
 
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
+	"github.com/funkygao/swf/services/history"
 )
 
 func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) {
@@ -59,7 +61,17 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 				// how to use m.TaskToken
 				// how to make up the history
 				// what about ActivityId
-				task := this.tasks[m.TaskToken]
+				task, present := this.tasks[m.TaskToken]
+				if !present {
+					log.Error("%s taskToken not found", m.TaskToken)
+					return nil, errors.New("task token invalid")
+				}
+
+				evts, err := history.Default.LoadHistoryEvents(task.d.WorkflowExecution.RunId)
+				if err != nil {
+					log.Error(err.Error())
+					return nil, err
+				}
 
 				var msg models.PollForActivityTaskOutput
 				msg.TaskToken = m.TaskToken
@@ -68,13 +80,13 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 				// fetch history by taskToken
 				//taskToken -> task.d.WorkflowExecution.RunId -> history
 
-				var evts models.HistoryEvents
-				evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskScheduled)
+				evt := models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeActivityTaskScheduled)
 				evt.ActivityTaskScheduledEventAttributes = &models.ActivityTaskScheduledEventAttributes{}
 				evt.ActivityTaskScheduledEventAttributes.Input = decision.ScheduleActivityTaskDecisionAttributes.Input
-				evts.AppendEvent(evt)
+				evts.AppendEvent(*evt)
 
 				// save the history?
+				history.Default.SaveHistoryEvents(task.d.WorkflowExecution.RunId, evts)
 
 				this.dispatchWorker(decision.ScheduleActivityTaskDecisionAttributes.ActivityType, msg.Bytes())
 
@@ -93,26 +105,38 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		// fire ActivityTaskCompleted Event
 		// fire DecisionTaskScheduled Event
 
+		task, present := this.tasks[m.TaskToken]
+		if !present {
+			log.Error("%s taskToken not found", m.TaskToken)
+			return nil, errors.New("task token invalid")
+		}
+
 		out := &models.RespondActivityTaskCompletedOutput{}
 
 		// fetch history by task token
 
-		var evts models.HistoryEvents
+		evts, err := history.Default.LoadHistoryEvents(task.d.WorkflowExecution.RunId)
+		if err != nil {
+			log.Error(err.Error())
+			return nil, err
+		}
 
-		evt := models.NewEvent(id, time.Now(), models.EventTypeActivityTaskCompleted)
+		evt := models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeActivityTaskCompleted)
 		evt.ActivityTaskCompletedEventAttributes = &models.ActivityTaskCompletedEventAttributes{}
 		evt.ActivityTaskCompletedEventAttributes.Result = m.Result
-		evts.AppendEvent(evt)
+		evts.AppendEvent(*evt)
 
-		evt = models.NewEvent(id, time.Now(), models.EventTypeDecisionTaskScheduled)
+		evt = models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
-		evts.AppendEvent(evt)
+		evts.AppendEvent(*evt)
+
+		history.Default.SaveHistoryEvents(task.d.WorkflowExecution.RunId, evts)
 
 		var msg models.PollForDecisionTaskOutput
-		msg.Events = *evts
+		msg.Events = evts
 		msg.TaskToken = this.nextTaskToken()
 
-		this.dispatchDecider(w, msg.Bytes())
+		this.dispatchDecider(task.d.WorkflowType, msg.Bytes())
 
 		output = out
 
