@@ -50,40 +50,72 @@ func (this *Client) StartWorkflowExecution(input *models.StartWorkflowExecutionI
 	}
 
 	output := &models.StartWorkflowExecutionOutput{}
-	output.From(body)
-	return output, nil
+	err = output.From(body)
+	return output, err
 }
 
-func (this *Client) PollForActivityTask() chan models.PollForActivityTaskOutput {
+func (this *Client) PollForActivityTask(input *models.PollForActivityTaskInput) (output chan *models.PollForActivityTaskOutput, err error) {
+	resp, body, err := this.invoke(models.OpPollForActivityTask, input)
+	if len(err) >= 1 {
+		return nil, err[0]
+	}
 
+	if resp.StatusCode == http.StatusNoContent {
+		return nil, nil
+	} else if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
+	}
+
+	output = &models.PollForActivityTaskOutput{}
+	err = output.From(body)
+	return
 }
 
-func (this *Client) PollForDecisionTask() {
+func (this *Client) PollForDecisionTask(input *models.PollForDecisionTaskInput) (output chan *models.PollForDecisionTaskOutput, err error) {
+	resp, body, err := this.invoke(models.OpPollForDecisionTask, input)
+	if len(err) >= 1 {
+		return nil, err[0]
+	}
 
+	if resp.StatusCode == http.StatusNoContent {
+		return nil, nil
+	} else if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
+	}
+
+	output = &models.PollForDecisionTaskOutput{}
+	err = output.From(body)
+	return
 }
 
-func (this *Client) RespondActivityTaskCompleted() {
+func (this *Client) RespondActivityTaskCompleted(input *models.RespondActivityTaskCompletedInput) (output *models.RespondActivityTaskCompletedOutput, err error) {
+	resp, body, err := this.invoke(models.OpRespondActivityTaskCompleted, input)
+	if len(err) >= 1 {
+		return nil, err[0]
+	}
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
+	}
+
+	output = &models.RespondActivityTaskCompletedOutput{}
+	err = output.From(body)
+	return
 }
 
-func (this *Client) RespondDecisionTaskCompleted() {
+func (this *Client) RespondDecisionTaskCompleted(input *models.RespondDecisionTaskCompletedInput) (output *models.RespondDecisionTaskCompletedOutput, err error) {
+	resp, body, err := this.invoke(models.OpRespondDecisionTaskCompleted, input)
+	if len(err) >= 1 {
+		return nil, err[0]
+	}
 
-}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s", http.StatusText(resp.StatusCode))
+	}
 
-func (this *Client) ListWorkflowTypes() {
-
-}
-
-func (this *Client) ListActivityTypes() {
-
-}
-
-func (this *Client) ListWorkflowExecutions(openOrClose bool) {
-
-}
-
-func (this *Client) GetWorkflowExecutionHistory() {
-
+	output = &models.RespondDecisionTaskCompletedOutput{}
+	err = output.From(body)
+	return
 }
 
 func (this *Client) invoke(op string, payload interface{}) (gorequest.Response, []byte, []error) {

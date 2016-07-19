@@ -123,6 +123,10 @@ func (this *PollForActivityTaskOutput) Bytes() []byte {
 	return b
 }
 
+func (this *PollForActivityTaskOutput) From(b []byte) error {
+	return json.Unmarshal(b, this)
+}
+
 type PollForDecisionTaskInput struct {
 	Identity string
 	Queue    string
@@ -145,6 +149,10 @@ func (this *PollForDecisionTaskOutput) Bytes() []byte {
 	return b
 }
 
+func (this *PollForDecisionTaskOutput) From(b []byte) error {
+	return json.Unmarshal(b, this)
+}
+
 type RespondDecisionTaskCompletedInput struct {
 	Decisions []Decision
 	TaskToken string
@@ -163,6 +171,10 @@ func (this *RespondDecisionTaskCompletedOutput) Bytes() []byte {
 	return b
 }
 
+func (this *RespondDecisionTaskCompletedOutput) From(payload []byte) error {
+	return json.Unmarshal(payload, this)
+}
+
 type RespondActivityTaskCompletedInput struct {
 	Result    string
 	TaskToken string
@@ -179,4 +191,8 @@ type RespondActivityTaskCompletedOutput struct {
 func (this *RespondActivityTaskCompletedOutput) Bytes() []byte {
 	b, _ := json.Marshal(this)
 	return b
+}
+
+func (this *RespondActivityTaskCompletedOutput) From(b []byte) error {
+	return json.Unmarshal(b, this)
 }
