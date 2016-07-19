@@ -5,9 +5,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/funkygao/gafka/ctx"
 	"github.com/funkygao/gocli"
 	"github.com/funkygao/swf"
 )
+
+func init() {
+	ctx.LoadFromHome()
+}
 
 func main() {
 	app := os.Args[0]
