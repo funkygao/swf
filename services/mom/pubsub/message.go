@@ -5,9 +5,12 @@ import (
 	"net/http"
 
 	"github.com/funkygao/gafka/cmd/kateway/api/v1"
+	log "github.com/funkygao/log4go"
 )
 
 func (this *PubSub) Pub(appid, topic, ver string, msg []byte) error {
+	log.Debug("PUB(%s, %s/%s) %s", appid, topic, ver, string(msg))
+
 	return this.client.Pub("key", msg, api.PubOption{
 		Topic: topic,
 		Ver:   ver,
@@ -23,7 +26,8 @@ func (this *PubSub) Sub(appid, topic, ver string) (payload []byte, err error) {
 		AppId: appid,
 		Topic: topic,
 		Ver:   ver,
-		Group: "xx", // FIXME
+		Group: appid + topic + ver, // FIXME
+		//AutoClose: true,
 	}, func(statusCode int, msg []byte) error {
 		if statusCode != http.StatusOK {
 			if statusCode == http.StatusNoContent {

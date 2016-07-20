@@ -51,16 +51,16 @@ func (this *Marker) mainLoop() {
 		this.Ui.Output(fmt.Sprintf("task token: %s (%s)", pollOutput.TaskToken, pollOutput.Input))
 
 		// work hard
+		displayNotify("marker", pollOutput.TaskToken, nil)
 
 		// respond
 		respondInput.TaskToken = pollOutput.TaskToken
-		respondOutput, err := this.cli.RespondActivityTaskCompleted(respondInput)
+		_, err = this.cli.RespondActivityTaskCompleted(respondInput)
 		if err != nil {
 			this.Ui.Error(err.Error())
 			time.Sleep(time.Second)
 			continue
 		}
-		this.Ui.Output(fmt.Sprintf("%+v", respondOutput))
 	}
 }
 

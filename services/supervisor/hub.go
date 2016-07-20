@@ -32,7 +32,11 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
 		evts.AppendEvent(*evt)
 
-		log.Info("%# v", pretty.Formatter(evts))
+		history.Default.SaveHistoryEvents(runId, *evts)
+
+		if false {
+			log.Info("%# v", pretty.Formatter(evts))
+		}
 
 		// save the history
 
@@ -68,6 +72,7 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 				task, present := this.tasks[m.TaskToken]
 				if !present {
 					log.Error("%s taskToken not found", m.TaskToken)
+
 					return nil, errors.New("task token invalid")
 				}
 

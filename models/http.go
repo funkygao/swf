@@ -129,7 +129,7 @@ func (this *PollForActivityTaskOutput) From(payload []byte) error {
 
 type PollForDecisionTaskInput struct {
 	Identity string
-	Queue    string
+	WorkflowType
 }
 
 func (this *PollForDecisionTaskInput) From(payload []byte) error {

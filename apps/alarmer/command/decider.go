@@ -38,6 +38,8 @@ func (this *Decider) mainLoop() {
 		pollInput = &models.PollForDecisionTaskInput{}
 		decision  = &models.RespondDecisionTaskCompletedInput{}
 	)
+	pollInput.WorkflowType.Name = "w1"
+	pollInput.WorkflowType.Version = "v1"
 	for {
 		pollOutput, err := this.cli.PollForDecisionTask(pollInput)
 		if err != nil {
@@ -47,6 +49,8 @@ func (this *Decider) mainLoop() {
 		}
 
 		this.Ui.Output(fmt.Sprintf("task token: %s %+v", pollOutput.TaskToken, pollOutput.Events))
+
+		displayNotify("decider", pollOutput.TaskToken, nil)
 
 		// worker orchestration according to history events
 		decision.Reset()
@@ -63,13 +67,14 @@ func (this *Decider) mainLoop() {
 
 		// respond
 		decision.TaskToken = pollOutput.TaskToken
-		respondOutput, err := this.cli.RespondDecisionTaskCompleted(decision)
+		_, err = this.cli.RespondDecisionTaskCompleted(decision)
 		if err != nil {
 			this.Ui.Error(err.Error())
 			time.Sleep(time.Second)
 			continue
 		}
-		this.Ui.Output(fmt.Sprintf("%+v", respondOutput))
+
+		time.Sleep(time.Second)
 	}
 }
 
