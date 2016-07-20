@@ -38,6 +38,8 @@ func (this *Marker) mainLoop() {
 		pollInput    = &models.PollForActivityTaskInput{}
 		respondInput = &models.RespondActivityTaskCompletedInput{}
 	)
+	pollInput.ActivityType.Name = "marker"
+	pollInput.ActivityType.Version = "v1"
 	for {
 		pollOutput, err := this.cli.PollForActivityTask(pollInput)
 		if err != nil {

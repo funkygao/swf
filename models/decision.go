@@ -12,6 +12,12 @@ type Decision struct {
 	ScheduleActivityTaskDecisionAttributes      *ScheduleActivityTaskDecisionAttributes
 }
 
+func NewDecision(typ string) *Decision {
+	return &Decision{
+		DecisionType: typ,
+	}
+}
+
 type ScheduleActivityTaskDecisionAttributes struct {
 	ActivityId   string
 	ActivityType ActivityType

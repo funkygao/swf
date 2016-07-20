@@ -15,15 +15,16 @@ type Workflow struct {
 	Ui  cli.Ui
 	Cmd string
 
-	listMode            bool
-	zone, cluster       string
-	regName, regVersion string
+	listMode                    bool
+	zone, cluster               string
+	domain, regName, regVersion string
 }
 
 func (this *Workflow) Run(args []string) (exitCode int) {
 	cmdFlags := flag.NewFlagSet("workflow", flag.ContinueOnError)
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
 	cmdFlags.StringVar(&this.regName, "register", "", "")
+	cmdFlags.StringVar(&this.domain, "domain", "", "")
 	cmdFlags.StringVar(&this.regVersion, "version", "v1", "")
 	cmdFlags.BoolVar(&this.listMode, "list", false, "")
 	cmdFlags.StringVar(&this.zone, "z", ctx.DefaultZone(), "")
@@ -50,6 +51,7 @@ func (this *Workflow) registerWorkflowType() {
 	input.Cluster = this.cluster
 	input.Name = this.regName
 	input.Version = this.regVersion
+	input.Domain = this.domain
 
 	_, err := swfapi.WithZone(this.zone).RegisterWorkflowType(input)
 	if err != nil {
@@ -57,7 +59,7 @@ func (this *Workflow) registerWorkflowType() {
 		return
 	}
 
-	this.Ui.Info("workflow type registered")
+	this.Ui.Info(fmt.Sprintf("workflow type %+v registered", input))
 }
 
 func (this *Workflow) listWorkflowTypes() {
@@ -75,6 +77,8 @@ Usage: %s workflow -z <zone> -c <cluster> [options]
 
     -register <name>
       Register a new workflow type.
+
+      -domain <name>
 
       -version <version>
         The version of the workflow type.

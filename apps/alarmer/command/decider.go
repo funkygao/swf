@@ -49,6 +49,17 @@ func (this *Decider) mainLoop() {
 		this.Ui.Output(fmt.Sprintf("task token: %s %+v", pollOutput.TaskToken, pollOutput.Events))
 
 		// worker orchestration according to history events
+		decision.Reset()
+		d := models.NewDecision(models.DecisionTypeScheduleActivityTask)
+		d.ScheduleActivityTaskDecisionAttributes = &models.ScheduleActivityTaskDecisionAttributes{
+			ActivityType: models.ActivityType{
+				Name:    "sms",
+				Version: "v1",
+			},
+			Input: "hello from decider",
+		}
+
+		decision.AddDecision(*d)
 
 		// respond
 		decision.TaskToken = pollOutput.TaskToken

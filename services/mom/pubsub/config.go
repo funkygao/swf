@@ -12,6 +12,7 @@ func NewConfig() *config {
 		PubEndpoint:   "localhost:9191",
 		SubEndpoint:   "localhost:9192",
 		AdminEndpoint: "localhost:9193",
+		Appid:         "app1",
 	}
 }
 

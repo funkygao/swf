@@ -10,5 +10,7 @@ type Service interface {
 
 	AddTopic(cluster, appid, topic, ver string) error
 	Pub(appid, topic, ver string, msg []byte) error
-	Sub(appid, topic, ver string) []byte
+	Sub(appid, topic, ver string) ([]byte, error)
 }
+
+var Default Service

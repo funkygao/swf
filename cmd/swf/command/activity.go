@@ -15,9 +15,9 @@ type Activity struct {
 	Ui  cli.Ui
 	Cmd string
 
-	listMode            bool
-	zone, cluster       string
-	regName, regVersion string
+	listMode                    bool
+	zone, cluster               string
+	domain, regName, regVersion string
 }
 
 func (this *Activity) Run(args []string) (exitCode int) {
@@ -25,6 +25,7 @@ func (this *Activity) Run(args []string) (exitCode int) {
 	cmdFlags.Usage = func() { this.Ui.Output(this.Help()) }
 	cmdFlags.StringVar(&this.regName, "register", "", "")
 	cmdFlags.StringVar(&this.regVersion, "version", "v1", "")
+	cmdFlags.StringVar(&this.domain, "domain", "", "")
 	cmdFlags.BoolVar(&this.listMode, "list", false, "")
 	cmdFlags.StringVar(&this.zone, "z", ctx.DefaultZone(), "")
 	cmdFlags.StringVar(&this.cluster, "c", "", "")
@@ -53,6 +54,7 @@ func (this *Activity) registerActivityType() {
 	input := &models.RegisterActivityTypeInput{}
 	input.Cluster = this.cluster
 	input.Name = this.regName
+	input.Domain = this.domain
 	input.Version = this.regVersion
 
 	_, err := swfapi.WithZone(this.zone).RegisterActivityType(input)
@@ -61,7 +63,7 @@ func (this *Activity) registerActivityType() {
 		return
 	}
 
-	this.Ui.Info("activity type registered")
+	this.Ui.Info(fmt.Sprintf("activity type %+v registered", input))
 }
 
 func (*Activity) Synopsis() string {
@@ -76,6 +78,8 @@ Usage: %s activity -z <zone> -c <cluster> [options]
 
     -register <name>
       Registers  a new activity type.
+
+      -domain <name>
 
       -version <version>
 

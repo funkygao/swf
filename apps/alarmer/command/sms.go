@@ -38,7 +38,12 @@ func (this *Sms) mainLoop() {
 		pollInput    = &models.PollForActivityTaskInput{}
 		respondInput = &models.RespondActivityTaskCompletedInput{}
 	)
+
+	pollInput.ActivityType.Name = "sms"
+	pollInput.ActivityType.Version = "v1"
 	for {
+		time.Sleep(time.Second)
+
 		pollOutput, err := this.cli.PollForActivityTask(pollInput)
 		if err != nil {
 			this.Ui.Error(err.Error())

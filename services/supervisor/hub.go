@@ -5,8 +5,10 @@ import (
 	"time"
 
 	log "github.com/funkygao/log4go"
+	"github.com/funkygao/pretty"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/history"
+	"github.com/funkygao/swf/services/mom"
 )
 
 func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) {
@@ -29,6 +31,8 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 		evt = models.NewEvent(evts.NextEventId(), time.Now(), models.EventTypeDecisionTaskScheduled)
 		evt.DecisionTaskScheduledEventAttributes = &models.DecisionTaskScheduledEventAttributes{}
 		evts.AppendEvent(*evt)
+
+		log.Info("%# v", pretty.Formatter(evts))
 
 		// save the history
 
@@ -151,17 +155,20 @@ func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) 
 
 }
 
-func (this *Supervisor) AddTopic(cluster, topic, ver string) error {
-	return this.m.AddTopic(cluster, "appid", topic, ver)
+func (this *Supervisor) AddTopic(cluster, domain, topic, ver string) error {
+	return mom.Default.AddTopic(cluster, domain, topic, ver)
 }
 
 func (this *Supervisor) dispatchWorker(w models.ActivityType, msg []byte) {
-	this.m.Pub("appid", w.Topic(), w.Version, msg)
+	if err := mom.Default.Pub("appid", w.Topic(), w.Version, msg); err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (this *Supervisor) dispatchDecider(w models.WorkflowType, msg []byte) {
-	this.m.Pub("appid", w.Topic(), w.Version, msg)
-
+	if err := mom.Default.Pub("app1", w.Topic(), w.Version, msg); err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (this *Supervisor) recvNotification() {

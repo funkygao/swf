@@ -10,7 +10,7 @@ import (
 
 	"github.com/funkygao/swf"
 	"github.com/funkygao/swf/cmd/swfd/server"
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 )
 
 func init() {

@@ -4,6 +4,7 @@ import (
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/services/manager"
+	"github.com/funkygao/swf/services/mom"
 )
 
 func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeInput) (
@@ -13,7 +14,7 @@ func (this *apiServer) registerWorkflowType(input *models.RegisterWorkflowTypeIn
 		return
 	}
 
-	if err = this.supervisor().AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	if err = this.supervisor().AddTopic(input.Cluster, input.Domain, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -31,7 +32,8 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 		return
 	}
 
-	if err = this.supervisor().AddTopic(input.Cluster, input.Topic(), input.Version); err != nil {
+	log.Info("%+v", input)
+	if err = this.supervisor().AddTopic(input.Cluster, input.Domain, input.Topic(), input.Version); err != nil {
 		return
 	}
 
@@ -63,14 +65,14 @@ func (this *apiServer) startWorkflowExecution(input *models.StartWorkflowExecuti
 
 func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInput) (
 	output *models.PollForDecisionTaskOutput, err error) {
-	// fire ScheduleActivityTask decision
-	//this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-	//return nil
-	//})
-
 	// how to get the WorkflowType?
+	msg, err := mom.Default.Sub("app1", "d_w1", "v1")
+	if err != nil {
+		log.Error("%v", err)
+	}
+
 	output = &models.PollForDecisionTaskOutput{}
-	output.TaskToken = ""
+	output.From(msg)
 
 	log.Debug("pollForDecisionTask %#v -> %#v", input, output)
 
@@ -79,16 +81,14 @@ func (this *apiServer) pollForDecisionTask(input *models.PollForDecisionTaskInpu
 
 func (this *apiServer) pollForActivityTask(input *models.PollForActivityTaskInput) (
 	output *models.PollForActivityTaskOutput, err error) {
-	//this.ctx.pubsub.Sub(opt, func(statusCode int, msg []byte) error {
-	//	return nil
-	//})
+	msg, err := mom.Default.Sub("app1", input.Topic(), input.Version)
+	if err != nil {
+		log.Error("%v", err)
+	}
 
 	// how to get the ActivityType?
 	output = &models.PollForActivityTaskOutput{}
-	output.Input = ""
-	output.TaskToken = ""
-	output.ActivityId = ""
-	output.WorkflowExecution = models.WorkflowExecution{}
+	output.From(msg)
 
 	log.Debug("pollForActivityTask %#v -> %#v", input, output)
 

@@ -91,7 +91,7 @@ type TerminateWorkflowExecutionOutput struct {
 
 type PollForActivityTaskInput struct {
 	Identity string
-	Queue    string
+	ActivityType
 }
 
 func (this *PollForActivityTaskInput) From(payload []byte) error {
@@ -160,6 +160,15 @@ type RespondDecisionTaskCompletedInput struct {
 
 func (this *RespondDecisionTaskCompletedInput) From(payload []byte) error {
 	return json.Unmarshal(payload, this)
+}
+
+func (this *RespondDecisionTaskCompletedInput) Reset() {
+	this.Decisions = make([]Decision, 0)
+	this.TaskToken = ""
+}
+
+func (this *RespondDecisionTaskCompletedInput) AddDecision(d Decision) {
+	this.Decisions = append(this.Decisions, d)
 }
 
 type RespondDecisionTaskCompletedOutput struct {
