@@ -26,8 +26,7 @@ func (this *PubSub) Sub(appid, topic, ver string) (payload []byte, err error) {
 		AppId: appid,
 		Topic: topic,
 		Ver:   ver,
-		Group: appid + topic + ver, // FIXME
-		//AutoClose: true,
+		Group: fmt.Sprintf("%s.%s.%s", appid, topic, ver), // FIXME
 	}, func(statusCode int, msg []byte) error {
 		if statusCode != http.StatusOK {
 			if statusCode == http.StatusNoContent {

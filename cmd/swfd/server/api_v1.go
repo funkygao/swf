@@ -9,6 +9,7 @@ import (
 	"github.com/funkygao/swf/models"
 	"github.com/funkygao/swf/utils"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/net/context"
 )
 
 func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -21,6 +22,8 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	ctx := context.Background()
 
 	api := r.Header.Get("X-Swf-Api")
 	log.Debug("%s %s(%s) %s", api, r.RemoteAddr, utils.HttpRemoteIp(r), string(payload.Body))

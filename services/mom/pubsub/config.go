@@ -16,10 +16,6 @@ func NewConfig() *config {
 	}
 }
 
-func (this *config) Queue() string {
-	return "__supervisor"
-}
-
 func (this *config) Group() string {
 	return "_sp_d_"
 }

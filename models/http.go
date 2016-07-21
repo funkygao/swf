@@ -56,7 +56,6 @@ func (this *RegisterWorkflowTypeOutput) From(payload []byte) error {
 
 type StartWorkflowExecutionInput struct {
 	Input        string
-	Queue        string
 	WorkflowId   string
 	WorkflowType WorkflowType
 }

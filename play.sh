@@ -45,3 +45,4 @@ echo
 
 # start a new workflow execution
 swf kickoff -z local  -workflow-type $WORKFLOW,v1 -workflow-id order_312 -input '{"order": 312}'
+echo "swf kickoff -z local  -workflow-type $WORKFLOW,v1 -workflow-id order_312 -input '{"order": 312}'"
