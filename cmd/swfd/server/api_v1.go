@@ -5,11 +5,10 @@ import (
 	"net/http"
 
 	"github.com/funkygao/gafka/mpool"
+	"github.com/funkygao/golib/httputil"
 	log "github.com/funkygao/log4go"
 	"github.com/funkygao/swf/models"
-	"github.com/funkygao/swf/utils"
 	"github.com/julienschmidt/httprouter"
-	"golang.org/x/net/context"
 )
 
 func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -23,10 +22,8 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 		return
 	}
 
-	ctx := context.Background()
-
 	api := r.Header.Get("X-Swf-Api")
-	log.Debug("%s %s(%s) %s", api, r.RemoteAddr, utils.HttpRemoteIp(r), string(payload.Body))
+	log.Debug("%s %s(%s) %s", api, r.RemoteAddr, httputil.HttpRealIp(r), string(payload.Body))
 
 	// http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-workflow-exec-lifecycle.html
 	var (
@@ -102,7 +99,7 @@ func (this *apiServer) handleApiV1(w http.ResponseWriter, r *http.Request, param
 	case models.OpDeprecateActivityType:
 
 	default:
-		this.notFoundHandler(w, r)
+		this.handleNotFound(w, r)
 		return
 	}
 

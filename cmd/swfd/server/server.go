@@ -59,8 +59,8 @@ func (this *Server) setupApis() {
 	m := this.Middleware
 
 	if this.apiServer != nil {
-		this.apiServer.Router().NotFound = http.HandlerFunc(this.apiServer.notFoundHandler)
-		this.apiServer.Router().GET("/alive", m(this.apiServer.checkAliveHandler))
+		this.apiServer.Router().NotFound = http.HandlerFunc(this.apiServer.handleNotFound)
+		this.apiServer.Router().GET("/alive", m(this.apiServer.handleCheckAlive))
 		this.apiServer.Router().POST("/v1", m(this.apiServer.handleApiV1))
 	}
 
@@ -108,6 +108,7 @@ func (this *Server) start() error {
 		}(svc)
 	}
 
+	// start serving clients
 	if err := this.apiServer.start(); err != nil {
 		return err
 	}

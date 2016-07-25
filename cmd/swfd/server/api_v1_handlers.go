@@ -32,7 +32,6 @@ func (this *apiServer) registerActivityType(input *models.RegisterActivityTypeIn
 		return
 	}
 
-	log.Info("%+v", input)
 	if err = this.supervisor().AddTopic(input.Cluster, input.Domain, input.Topic(), input.Version); err != nil {
 		return
 	}

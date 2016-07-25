@@ -80,13 +80,13 @@ func (this *webServer) start() (err error) {
 	return nil
 }
 
-func (this *webServer) notFoundHandler(w http.ResponseWriter, r *http.Request) {
+func (this *webServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	log.Error("%s: not found %s", this.name, r.RequestURI)
 
 	w.Header().Set("Connection", "close")
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
-func (this *webServer) checkAliveHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func (this *webServer) handleCheckAlive(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	w.Write([]byte(`{"ok":1}`))
 }
