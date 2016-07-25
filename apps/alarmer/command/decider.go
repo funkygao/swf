@@ -50,23 +50,15 @@ func (this *Decider) mainLoop() {
 
 		this.Ui.Output(fmt.Sprintf("task token: %s %+v", pollOutput.TaskToken, pollOutput.Events))
 
-		displayNotify("decider", pollOutput.TaskToken, nil)
+		displayNotify("decider", fmt.Sprintf("workflow:%s-%s, task:%s", pollOutput.WorkflowType.Name,
+			pollOutput.WorkflowType.Version, pollOutput.TaskToken), nil)
 
 		// worker orchestration according to history events
 		decision.Reset()
-		d := models.NewDecision(models.DecisionTypeScheduleActivityTask)
-		d.ScheduleActivityTaskDecisionAttributes = &models.ScheduleActivityTaskDecisionAttributes{
-			ActivityType: models.ActivityType{
-				Name:    "sms",
-				Version: "v1",
-			},
-			Input: "hello from decider",
-		}
-
-		decision.AddDecision(*d)
+		decision.TaskToken = pollOutput.TaskToken
+		this.decide(pollOutput.TaskToken, pollOutput.Events, decision)
 
 		// respond
-		decision.TaskToken = pollOutput.TaskToken
 		_, err = this.cli.RespondDecisionTaskCompleted(decision)
 		if err != nil {
 			this.Ui.Error(err.Error())
@@ -76,6 +68,23 @@ func (this *Decider) mainLoop() {
 
 		time.Sleep(time.Second)
 	}
+}
+
+func (*Decider) decide(taskToken string, events models.HistoryEvents, decision *models.RespondDecisionTaskCompletedInput) {
+	d := models.NewDecision(models.DecisionTypeScheduleActivityTask)
+	d.ScheduleActivityTaskDecisionAttributes = &models.ScheduleActivityTaskDecisionAttributes{
+		ActivityType: deciderActivityType,
+		Input:        "hello from decider",
+	}
+
+	decision.AddDecision(*d)
+
+	d = models.NewDecision(models.DecisionTypeScheduleActivityTask)
+	d.ScheduleActivityTaskDecisionAttributes = &models.ScheduleActivityTaskDecisionAttributes{
+		ActivityType: markerActivityType,
+		Input:        "hello1 from decider",
+	}
+	decision.AddDecision(*d)
 }
 
 func (*Decider) Synopsis() string {

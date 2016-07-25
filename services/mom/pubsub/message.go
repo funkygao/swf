@@ -33,7 +33,7 @@ func (this *PubSub) Sub(appid, topic, ver string) (payload []byte, err error) {
 				return nil
 			}
 
-			return fmt.Errorf("%v", http.StatusText(statusCode))
+			return fmt.Errorf("%v", http.StatusText(statusCode)+":"+string(msg))
 		}
 
 		payload = msg

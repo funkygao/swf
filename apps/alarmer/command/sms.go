@@ -35,12 +35,12 @@ func (this *Sms) Run(args []string) (exitCode int) {
 func (this *Sms) mainLoop() {
 	this.Ui.Info("enter worker main loop")
 	var (
-		pollInput    = &models.PollForActivityTaskInput{}
+		pollInput = &models.PollForActivityTaskInput{
+			ActivityType: smsActivityType,
+		}
 		respondInput = &models.RespondActivityTaskCompletedInput{}
 	)
 
-	pollInput.ActivityType.Name = "sms"
-	pollInput.ActivityType.Version = "v1"
 	for {
 		time.Sleep(time.Second)
 
@@ -58,6 +58,7 @@ func (this *Sms) mainLoop() {
 
 		// respond
 		respondInput.TaskToken = pollOutput.TaskToken
+		respondInput.Result = "sms sent"
 		_, err = this.cli.RespondActivityTaskCompleted(respondInput)
 		if err != nil {
 			this.Ui.Error(err.Error())

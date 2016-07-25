@@ -11,6 +11,8 @@ import (
 	"github.com/funkygao/swf/services/mom"
 )
 
+// WorkflowExecutionStarted -> DecisionTaskScheduled -> DecisionTaskStarted ->
+//
 func (this *Supervisor) Fire(input interface{}) (output interface{}, err error) {
 	switch m := input.(type) {
 	case *models.StartWorkflowExecutionInput:

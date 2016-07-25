@@ -40,7 +40,13 @@ func main() {
 	c.Commands = commands
 	c.HelpFunc = func(m map[string]cli.CommandFactory) string {
 		var buf bytes.Buffer
-		buf.WriteString("alarmer demonstrates how to use SWF to handle system alarm\n\n")
+		buf.WriteString("alarmer demonstrates how to use SWF to handle system alarm\n")
+		buf.WriteString(`
+                alarm  +---------+    +--- marker
+    swf kickoff -----> | decider |----|
+                       +---------+    +--- sms
+
+`)
 		buf.WriteString(cli.BasicHelpFunc(app)(m))
 		return buf.String()
 	}

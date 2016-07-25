@@ -35,11 +35,12 @@ func (this *Marker) Run(args []string) (exitCode int) {
 func (this *Marker) mainLoop() {
 	this.Ui.Info("enter worker main loop")
 	var (
-		pollInput    = &models.PollForActivityTaskInput{}
+		pollInput = &models.PollForActivityTaskInput{
+			ActivityType: markerActivityType,
+		}
 		respondInput = &models.RespondActivityTaskCompletedInput{}
 	)
-	pollInput.ActivityType.Name = "marker"
-	pollInput.ActivityType.Version = "v1"
+
 	for {
 		pollOutput, err := this.cli.PollForActivityTask(pollInput)
 		if err != nil {
@@ -52,6 +53,9 @@ func (this *Marker) mainLoop() {
 
 		// work hard
 		displayNotify("marker", pollOutput.TaskToken, nil)
+
+		state, _ := this.Ui.Ask(fmt.Sprintf("token:%s state:<handled|ignore>", pollOutput.TaskToken))
+		respondInput.Result = state
 
 		// respond
 		respondInput.TaskToken = pollOutput.TaskToken
